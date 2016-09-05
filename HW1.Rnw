@@ -1,0 +1,29 @@
+\documentclass{article}
+\usepackage{amscd, amssymb, amsmath, verbatim, setspace}
+\usepackage[left=1.0in, right=1.0in, top=1.0in, bottom=1.0in]{geometry}
+\usepackage{mathrsfs}
+\usepackage{listings}
+<<echo=FALSE>>=
+  library(knitr)
+opts_knit$set(root.dir = "~/Documents/Georgetown/Bayesian-Statistics-Mathematics-640/Final Exam/",concordance=TRUE)
+opts_chunk$set(fig.keep="high", out.width="0.50\\linewidth")
+@
+
+\begin{document}
+\begin{flushright}
+Arif Ali\\
+Math 611 Stochastic Simulation\\
+Sept 8, 2016\\
+\end{flushright}
+
+\begin{center}
+\LARGE\textbf{Homework #1}
+  \end{center}
+\section*{Exercise 1}
+\section*{Exercise 2}
+\section*{Exercise 3}
+\section*{Exercise 4}
+\section*{Exercise 5}
+
+
+\end{document}
