@@ -1,0 +1,181 @@
+\documentclass{article}
+\usepackage{amscd, amssymb, amsmath, verbatim, setspace}
+\usepackage[left=1.0in, right=1.0in, top=1.0in, bottom=1.0in]{geometry}
+\usepackage{mathrsfs}
+\usepackage{listings}
+<<echo=FALSE>>=
+  library(knitr)
+opts_knit$set(root.dir = "~/Documents/Georgetown/Stochastic Simulations Math 611 Fall 2016/",concordance=TRUE)
+opts_chunk$set(fig.keep="high", out.width="0.50\\linewidth")
+@
+
+\begin{document}
+\begin{flushright}
+Arif Ali\\
+Math 611 Stochastic Simulation\\
+Sept 8, 2016\\
+\end{flushright}
+
+\begin{center}
+\LARGE\textbf{Homework 1}
+  \end{center}
+\section*{Exercise 1}
+Let $U \sim Unif(0,1)$ and $X = g(u) = -c*ln(u)$ given that $c>0$
+\begin{equation}
+\begin{split}
+X = -c*ln(U) \implies \\
+-\frac{X}{c} = ln(U) \implies \\
+e^{-\frac{X}{c}} = U \\
+\therefore g^{-1}(u) = e^{-\frac{u}{c}}
+\end{split}
+\end{equation}
+
+Since $U \sim Unif(0,1)$ the pdf is $f_U(u) = \frac{1}{1-0}=1$
+In order to get the the pdf of X, the following is done:
+\begin{equation}
+\begin{split}
+f(x)= f_U(g^{-1}(x))*\big|d/dx(g^{-1}(x)\big| = \\
+1*\big|d/dx(e^{-x/c})\big| = \\
+1*\big|-1/c*e^{-x/c}\big| =\\
+1/c*e^{-x/c}\sim exp(1/c)
+\end{split}
+\end{equation}
+
+
+\section*{Exercise 2}
+
+\section*{Exercise 3}
+\subsection*{Part A}
+
+Let $z = 1+e^{-(x-\mu)/\beta} \implies dz = -\frac{1}{\beta}e^{-(x-\mu)/\beta}*dx \implies dx = \frac{dz}{-\frac{1}{\beta}e^{-(x-\mu)/\beta}}$
+\begin{equation}
+\begin{split}
+F(x) = \int^{x}_{-\infty} f(x) dx = \\
+\int\frac{1}{\beta}\frac{e^{-(x-\mu)/\beta}}{(1+e^{-(x-\mu)/\beta})^2}dx= \\
+\int\frac{1}{\beta}\frac{e^{-(x-\mu)/\beta}}{z^2}*\frac{dz}{-\frac{1}{\beta}e^{-(x-\mu)/\beta}}= \\
+\int-\frac{1}{z^2}dz= \\
+\frac{1}{z}=\big|^{x}_{-\infty}\frac{1}{1+e^{-(x-\mu)/\beta}}=\frac{1}{1+e^{-(x-\mu)/\beta}}
+\end{split}
+\end{equation}
+
+To find the inverse, we do the following:
+\begin{equation}
+\begin{split}
+Y = \frac{1}{1+e^{-(x-\mu)/\beta}} \implies\\
+1+e^{-(x-\mu)/\beta} = \frac{1}{Y} \implies\\
+e^{-(x-\mu)/\beta} = \frac{1}{Y} - 1 \implies\\
+-(x-\mu)/\beta = ln(\frac{1}{Y} - 1) \implies\\
+-(x-\mu) = ln(\frac{1}{Y} - 1)\beta \implies\\
+x = \mu - ln(\frac{1}{Y} - 1)\beta
+\therefore F^{-1}(x) = \mu - ln(\frac{1}{x} - 1)\beta
+\end{split}
+\end{equation}
+<<>>=
+u = runif(1e4)
+
+inverse_logistic_cdf = function(x, mu = 0 , B = 1){
+  mu - log(1/x-1)*B
+}
+
+it_logistic = inverse_logistic_cdf(u)
+r_logistic = rlogis(1e4)
+
+hist(it_logistic, breaks = 50, col = "green")
+hist(r_logistic, breaks = 50, col = "#FF000099", add = T)
+@
+Based on a comparision of the histograms of the sampled inverse function of the logistic distribution against the random generator of the logistic distribution, their seems to be a close relationship between the two. This indicates a similar behavior, which could lead to the conclusion that both functions act in the the same way. 
+
+\subsection*{Part B}
+Let $tan(z)=\frac{x-\mu}{\sigma}\implies dz*sec^{2}(z)=\frac{1}{\sigma}*dx \implies dx = \sigma * sec^{2}(z)*dz$
+\begin{equation}
+\begin{split}
+F(x) = \int^{x}_{-\infty} f(x) dx = \\
+\int \frac{1}{\pi*\sigma}*\frac{1}{1+(\frac{x-\mu}{\sigma})^2}dx = \\
+\int \frac{1}{\pi*\sigma}*\frac{1}{1+tan^2(z)}*\sigma * sec^{2}(z)*dz = \\
+\frac{1}{\pi} \int 1 *dz = \\
+\frac{1}{\pi} \big|z = \\
+\frac{1}{\pi} \big|^{x}_{-\infty}arctan(\frac{x-\mu}{\sigma}) = \\
+\frac{1}{\pi}*arctan(\frac{x-\mu}{\sigma})+\frac{1}{2}
+\end{split}
+\end{equation}
+To find the inverse, we do the following:
+\begin{equation}
+\begin{split}
+\frac{1}{\pi}*arctan(\frac{x-\mu}{\sigma})+\frac{1}{2} = Y \implies \\
+\pi*(Y-\frac{1}{2} = arctan(\frac{x-\mu}{\sigma})) \implies
+tan(\pi*(Y-\frac{1}{2})) = \frac{x-\mu}{\sigma} \implies \\
+\sigma*tan(\pi*(Y-\frac{1}{2})) + \mu = x \\
+\therefore F^{-1}(x) = \sigma*tan(\pi*(x-\frac{1}{2})) + \mu
+\end{split}
+\end{equation}
+<<>>=
+inverse_cauchy_cdf = function(x, mu = 0, sigma = 1){
+  sigma*tan(pi*(x-0.5)) + mu
+}
+u = runif(1e4)
+it_cauchy = inverse_cauchy_cdf(u)
+r_cauchy = rcauchy(1e4)
+
+
+hist(it_cauchy, breaks = 50, col = "blue")
+hist(r_cauchy, breaks = 50, col = "#FF000099", add = T)
+@
+In both cases, the cauchy distribution seems to settle on numbers close to 0. However, the tails are harder to compare. Since there seems to be an overlap with the majority of points, it may be concluded that the inverse of the cauchy distribution act similar to the random generated sample of the cauchy distribution.
+
+John Hotchkiss recommended looking at the density plot and qqplots between the two samples
+<<>>=
+par(mfrow=c(1,2))
+qqplot(it_cauchy, r_cauchy)
+plot(density(it_cauchy))
+lines(density(r_cauchy), col = "red")
+@
+The qqplot doesn't show a clear relationship between the the two, but the density plot shows a convergence at 0 for both densities
+
+\section*{Exercise 4}
+<<>>=
+par(mfrow=c(1,2))
+u1 = runif(1e3)
+u2 = runif(1e3)
+
+z1 = sqrt(-2*log(u1))*cos(2*pi*u2)
+z2 = sqrt(-2*log(u1))*sin(2*pi*u2)
+
+
+qqnorm(z1)
+qqline(z1, col = "red")
+plot(density(z1))
+lines(seq(min(z1),max(z1), length = 1e4), dnorm(seq(min(z1),max(z1), length = 1e4)), col = "red")
+
+qqnorm(z2)
+qqline(z2, col = "red")
+plot(density(z2))
+lines(seq(min(z2),max(z2), length = 1e4), dnorm(seq(min(z1),max(z1), length = 1e4)), col = "red")
+
+@
+Both $Z_1$ and $Z_2$ follow a normal distribution based on a comparison of plots with the normal distribution's density along with the qqplots against the normal distribution. 
+\section*{Exercise 5}
+To Prove CLT works for a non-normal distribution, the beta distribution was sampled with $\alpha = 1$ and $\beta=2$ such that $Samples \sim beta(1,2)$
+<<>>=
+samples = matrix(nrow = 35, ncol = 1e3)
+for(i in 1:1000){
+  samples[,i] = rbeta(35, 1,2)
+}
+@
+\subsection*{Part A}
+<<>>=
+means = apply(samples, 2, mean)
+summary(means)
+sd(means)
+@
+From the definition of the beta distribution, $E(X) = \frac{\alpha}{\alpha+\beta}=\frac{1}{1+2}=\frac{1}{3}$
+Based on the summary, the mean that is approximated is very close to the theortical mean.
+
+The variance is defined as $Var(X)=\frac{\alpha*\beta}{(\alpha+\beta)^2*(\alpha+\beta+1)}$ Since we are dealing with a sample of $n=35$, the standard deviation should be $SD(X)=\sqrt{\frac{\alpha*\beta}{(\alpha+\beta)^2*(\alpha+\beta+1)}/35}= 0.0398$. The approximated value is also close to the theortical standard deviation.
+
+\subsection*{Part B}
+<<>>=
+qqnorm(means)
+qqline(means, col = "red")
+@
+Based off the qqplot, the distribution of means follows closely to the normal distribution; however, there are some noticable movements away from the qqline at the tail ends. 
+\end{document}
