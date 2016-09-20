@@ -43,7 +43,43 @@ f(x)= f_U(g^{-1}(x))*\big|d/dx(g^{-1}(x)\big| = \\
 
 
 \section*{Exercise 2}
+Let $U_{i} \sim Unif(0,1)$ where i is $1..n$ and $X=-\frac{1}{k}*ln(\prod^{n}_{i=1}U_{i})$
+\begin{equation}
+\begin{split}
+f(x)=-\frac{1}{k}*ln(\prod^{n}_{i=1}U_{i}) = \\
+-\frac{1}{k}*\sum^{n}_{i=1}ln(U_{i}) = \\
+\sum^{n}_{i=1}-\frac{1}{k}*ln(U_{i})
+\end{split}
+\end{equation}
+From Exercise one, we are given that $-\frac{1}{c}ln(U) \sim exp(c)$ where $U \sim Unif(0,1) \therefore -\frac{1}{k}*ln(U_{i}) \sim exp(k)$
+The sum of exponential distribtuions that are i.i.d have a gamma distribution such that $gamma(n,\lambda)$ where $\lambda$ is the parameter passed from the exponential distribution and n is the number of random variables.
+\begin{equation}
+\therefore -\frac{1}{k}*ln(\prod^{n}_{i=1}U_{i}) \sim gamma(n,k)
+\end{equation}
 
+
+The proof of the summation of exponential random variables being the same as a gamma distribution can be proved by induction. let $S_{i}$ be the sum of exponential distributions.
+
+for $i = 1$, since $exp(\lambda)\equiv gamma(1,\lambda)$ the base case for induction is true.  
+
+Assume that $S_{i}$ where $i = 1...n$ is distributed the following way:
+\begin{equation}
+\begin{split}
+S_{1..n} =  gamma(n,\lambda) \sim \Gamma(n)^{-1}\lambda^{n}x^{n-1}e^{-\lambda*x}
+\end{split}
+\end{equation}
+The last step is $gamma(n+1) \equiv S_{1..n}+S_{1}$
+
+\begin{equation}
+\begin{split}
+f_{Z}(z) = \int_{0}^{z}f_{S_{1..n}}(y)*f_{S_{1}}(z-y)dy = \\
+\int_{0}^{z}\Gamma(n)^{-1}\lambda^{n}y^{n-1}e^{-\lambda*x}*\lambda*e^{-(z-y)\lambda}dy = \\
+\Gamma(n)^{-1}\lambda^{n+1}e^{-z\lambda}*\int_{0}^{z}y^{n-1}e^{-y\lambda + y\lambda}dy = \\
+\Gamma(n)^{-1}\lambda^{n+1}e^{-z\lambda}*\frac{1}{n}*\big|_{0}^{z}y^{n}dy = \\
+\Gamma(n+1)^{-1}\lambda^{n+1}e^{-z\lambda}*z^{(n+1)-1} \sim gamma(n+1, \lambda)
+\end{split}
+\end{equation}
+$\therefore$ The sum of iid random exponential variables follows a gamma distribution.
 \section*{Exercise 3}
 \subsection*{Part A}
 
@@ -66,7 +102,7 @@ Y = \frac{1}{1+e^{-(x-\mu)/\beta}} \implies\\
 e^{-(x-\mu)/\beta} = \frac{1}{Y} - 1 \implies\\
 -(x-\mu)/\beta = ln(\frac{1}{Y} - 1) \implies\\
 -(x-\mu) = ln(\frac{1}{Y} - 1)\beta \implies\\
-x = \mu - ln(\frac{1}{Y} - 1)\beta
+x = \mu - ln(\frac{1}{Y} - 1)\beta \\
 \therefore F^{-1}(x) = \mu - ln(\frac{1}{x} - 1)\beta
 \end{split}
 \end{equation}

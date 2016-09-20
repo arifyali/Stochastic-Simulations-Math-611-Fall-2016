@@ -1,0 +1,69 @@
+\documentclass{article}
+\usepackage{amscd, amssymb, amsmath, verbatim, setspace}
+\usepackage[left=1.0in, right=1.0in, top=1.0in, bottom=1.0in]{geometry}
+\usepackage{mathrsfs}
+\usepackage{listings}
+<<echo=FALSE>>=
+  library(knitr)
+opts_knit$set(root.dir = "~/Documents/Georgetown/Stochastic Simulations Math 611 Fall 2016/",concordance=TRUE)
+opts_chunk$set(fig.keep="high", out.width="0.60\\linewidth")
+@
+
+\begin{document}
+\begin{flushright}
+Arif Ali\\
+Math 611 Stochastic Simulation\\
+Sept 22, 2016\\
+\end{flushright}
+
+\begin{center}
+\LARGE\textbf{Homework 3}
+  \end{center}
+\section*{Exercise 1}
+Since $Area_{square}=1$, $Area_{circle}=\frac{\pi}{2^2}=\frac{\pi}{4}$ as stated in the exercise. Therefore the number of points that are expected in the circle is $\frac{\pi/4}{1}= \pi/4$ Given that the orgin of the circle is at $(1/2,1/2)$ with a radius of $r=1/2$, the circle equation is $(x-\frac{1}{2})^2+(y-\frac{1}{2})^2=\frac{1}{4}$, so we should look for points with coordinates such that $(x-\frac{1}{2})^2+(y-\frac{1}{2})^2<\frac{1}{4}$. I assume that the circumference doesn't count as in the circle.
+<<>>=
+points_in_circle = function(z){
+  points= data.frame(x = runif(1e3), y = runif(1e3))
+  mean((points$x-1/2)^2+(points$y-1/2)^2<1/4)
+}
+estimates_of_points_in_circle = sapply(1:1e3, points_in_circle)
+mean(estimates_of_points_in_circle)
+var(estimates_of_points_in_circle)
+hist(estimates_of_points_in_circle)
+@
+Based on the estimated mean and the variance, the fixed range is very close to the expected fraction.   
+\section*{Exercise 2}
+Please note: I used the methods from "http://math.stackexchange.com/questions/1200443/evaluating-difficult-monte-carlo-integration-in-r" to do monte carlo integration in R
+\subsection*{Part A}
+<<>>=
+f = function(x){
+  return(exp(-4*x/3)*x^3)
+}
+curve(f, lwd=2,to = 50)
+@
+Based on the graph, it is clear that $f(x)$ converges to 0 close to 10, so using the method described in class, we will do the following:
+<<>>=
+n = 1e4
+a = 0
+b = 10
+x = runif(n, a, b)
+y = f(x)
+(b-a)/n*sum(y)
+@
+\subsection*{Part B}
+\begin{equation}
+\begin{split}
+\int_{0}^{\infty}e^{\frac{-4x}{3}}x^3\delta x \implies \\
+\int_{0}^{\infty}x^3*e^{\frac{-4x}{3}}\delta x \implies \\
+\int_{0}^{\infty}x^{4-1}*e^{\frac{x}{3/4}}\delta x \implies \\
+\Gamma(4)*(\frac{3}{4})^4\int_{0}^{\infty}\frac{1}{\Gamma(4)*(\frac{3}{4})^4}*x^{4-1}*e^{\frac{x}{3/4}}\delta x
+\end{split}
+\end{equation}
+please recognize that $\frac{1}{\Gamma(4)*(\frac{3}{4})^4}*x^{4-1}*e^{\frac{x}{3/4}}\sim gamma(4,3/4)$
+
+$\therefore \Gamma(4)*(\frac{3}{4})^4\int_{0}^{\infty}\frac{1}{\Gamma(4)*(\frac{3}{4})^4}*x^{4-1}*e^{\frac{x}{3/4}}\delta x = \Gamma(4)*(\frac{3}{4})^4 = 1.898$
+\section*{Exercise 3}
+\section*{Exercise 4}
+\section*{Exercise 5}
+
+\end{document}

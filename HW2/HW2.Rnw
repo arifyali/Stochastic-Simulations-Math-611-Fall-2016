@@ -1,0 +1,101 @@
+\documentclass{article}
+\usepackage{amscd, amssymb, amsmath, verbatim, setspace}
+\usepackage[left=1.0in, right=1.0in, top=1.0in, bottom=1.0in]{geometry}
+\usepackage{mathrsfs}
+\usepackage{listings}
+<<echo=FALSE>>=
+  library(knitr)
+opts_knit$set(root.dir = "~/Documents/Georgetown/Stochastic Simulations Math 611 Fall 2016/",concordance=TRUE)
+opts_chunk$set(fig.keep="high", out.width="0.60\\linewidth")
+@
+
+\begin{document}
+\begin{flushright}
+Arif Ali\\
+Math 611 Stochastic Simulation\\
+Sept 15, 2016\\
+\end{flushright}
+
+\begin{center}
+\LARGE\textbf{Homework 2}
+  \end{center}
+\section*{Exercise 1}
+<<>>=
+transition_matrix = matrix(c(0,1/25,0,0,0,0,1,8/25,4/25,0,0,0,
+         0,16/25,12/25,9.25,0,0, 0,0,9/25,12/25,16/25,0,
+         0,0,0,4/25,8/25,1, 0,0,0,0,1/25,0), ncol = 6)
+row.names(transition_matrix) = 0:5
+colnames(transition_matrix) = 0:5
+transition_matrix
+@
+In order to create the transition matrix, the following rules were set, at right urn with 0 black balls, the only possible position was to gain 1 and for right urn with 5 black balls, only option was to lose 1. In the other cases, to lose a black ball, the proportion of black balls in the right urn was multiplied by the proportion of white balls in the left urn. To gain a black ball, the proportion of white balls in the right urn was multiplied by the proportion of black balls in the left urn. For no gain, the two cases where a ball of the same color was pick were added.
+
+
+Based on the matrix the probabilities are derived as the following (note we define $m=5$):
+
+$p(i, i-1)=\frac{i^{2}}{m^{2}}$
+
+$p(i,i+1)=\frac{(m-i)^{2}}{m^{2}}$
+
+$p(i,i)=\frac{m^{2}-(m-i)^{2}-i^2}{m^2}=\frac{m^{2}-(m^2-2mi+i^2)-i^2}{m^2}=\frac{2mi-2i^{2}}{m^{2}}$
+
+\section*{Exercise 2}
+\subsubsection*{$p^{3}(1,3)$}
+It's impossible to go from spot 1 to 3 within 3 steps: $p^{3}(1,3) = 0$
+
+\subsubsection*{$p^{2}(1,4)$}
+It's impossible to go from spot 1 to 4 within 2 steps: $p^{2}(1,4) = 0$
+
+\subsubsection*{$p^3(1,0)$}
+There are two possible ways to go from 1 to 0 within 3 steps: $p^3(1,0) = 0.6 + 0.6*0.4*0.6 = 0.744$
+The first step is possible because once an enpoint is hit, the probability of staying at the endpoint is one.
+
+\section*{Exercise 3}
+<<>>=
+two_state_matrix = matrix(c(0.3,0.6,0.7,0.4), ncol = 2)
+row.names(two_state_matrix) = c("H", "M")
+colnames(two_state_matrix) = c("H", "M")
+two_state_matrix
+@
+\section*{Exercise 4}
+\subsection*{Part A}
+<<>>=
+M = optimize(f=function(x){dbeta(x,2,2)}, interval=c(0,1),maximum =T)$objective
+x = NULL
+Nsim=1e4
+while (length(x)<Nsim){
+  y=runif(Nsim*M)
+  x=c(x,y[runif(Nsim*M)*M<dbeta(y,2,2)])
+  }
+x=x[1:Nsim]
+
+hist(x, breaks = 40, freq = F, "xlab" = "Accepted Values")
+curve(dbeta(x, 2,2), add = T, col = "red")
+@
+\subsection*{Part B}
+<<>>=
+plot(quantile(x, probs = seq(0,1, by = 0.01)), qbeta(seq(0,1,by = .01),2,2),
+     xlab = "empirical", ylab = "theortical")
+abline(b=1,a=0, col = "red")
+@
+based on the Q-Q plot, there looks to be a linear relationship between the quantiles of the empirical and theortical values with a slope of 1 and intercept of 0. This indicates that the distribution of both is the same. This observation is further back by the relationship of the histogram to the plot of the density curve.  
+\section*{Exercise 5}
+<<>>=
+library(smoothmest)
+M = 2/sqrt(2*pi)*exp(.5) #note M can be approximated by doing optimize(f=function(x){dnorm(x,0,1)/ddoublex(x)}, interval=c(0,1),maximum =T)$objective
+f = function(x) dnorm(x, 0, 1)
+g = function(x) ddoublex(x)
+Nsim=1e3
+x_rs = c()
+count = 0
+while(length(x_rs)<Nsim){
+  x = rdoublex(1); u = runif(1)
+  count = count + 1
+  if(u < f(x)/(M*g(x))) {
+    x_rs= c(x_rs,x)
+    }
+}
+hist(x_rs, breaks = 40, freq = F)
+curve(dnorm(x, 0,1), add = T, col = "red")
+@
+\end{document}
