@@ -55,14 +55,33 @@ y = f(x)
 \begin{split}
 \int_{0}^{\infty}e^{\frac{-4x}{3}}x^3\delta x \implies \\
 \int_{0}^{\infty}x^3*e^{\frac{-4x}{3}}\delta x \implies \\
-\int_{0}^{\infty}x^{4-1}*e^{\frac{x}{3/4}}\delta x \implies \\
-\Gamma(4)*(\frac{3}{4})^4\int_{0}^{\infty}\frac{1}{\Gamma(4)*(\frac{3}{4})^4}*x^{4-1}*e^{\frac{x}{3/4}}\delta x
+\int_{0}^{\infty}x^{4-1}*e^{-\frac{x}{3/4}}\delta x \implies \\
+\Gamma(4)*(\frac{3}{4})^4\int_{0}^{\infty}\frac{1}{\Gamma(4)*(\frac{3}{4})^4}*x^{4-1}*e^{-\frac{x}{3/4}}\delta x
 \end{split}
 \end{equation}
 please recognize that $\frac{1}{\Gamma(4)*(\frac{3}{4})^4}*x^{4-1}*e^{\frac{x}{3/4}}\sim gamma(4,3/4)$
 
 $\therefore \Gamma(4)*(\frac{3}{4})^4\int_{0}^{\infty}\frac{1}{\Gamma(4)*(\frac{3}{4})^4}*x^{4-1}*e^{\frac{x}{3/4}}\delta x = \Gamma(4)*(\frac{3}{4})^4 = 1.898$
 \section*{Exercise 3}
+<<>>=
+n = 1e4
+a = -10
+b = 10
+x = runif(n, a, b)
+y = exp(-(dnorm(x, 0, 2))^2)
+(b-a)/n*sum(y)
+@
+\begin{equation}
+\begin{split}
+E_{f}(h(x)) = \int_{x}\frac{1}{\sqrt{2\pi\sigma^{2}}}e^{-\frac{1}{2\sigma^2}x^2}*e^{-x^2} \delta x = \\
+\int_{x}\frac{1}{\sqrt{2\pi\sigma^{2}}}e^{-\frac{1}{2\sigma^2}x^2 -\frac{2\sigma^2}{2\sigma^2}x^2} \delta x = \\
+\int_{x}\frac{1}{\sqrt{2\pi\sigma^{2}}}e^{-\frac{1}{2\sigma^2}x^2(1+2\sigma^2)} \delta x = \\
+\int_{x}\frac{1}{\sqrt{2\pi\sigma^{2}}}e^{-\frac{1}{\frac{2\sigma^2}{(1+2\sigma^2)}}x^2} \delta x = \\
+1/\sqrt{(1+2\sigma^2)}\int_{x}\frac{1}{\sqrt{2\pi\sigma^{2}/(1+2\sigma^2)}}e^{-\frac{1}{\frac{2\sigma^2}{(1+2\sigma^2)}}x^2} \delta x =
+1/\sqrt{(1+2\sigma^2)}
+\end{split}
+\end{equation}
+This is true because $\frac{1}{\sqrt{2\pi\sigma^{2}/(1+2\sigma^2)}}e^{-\frac{1}{\frac{2\sigma^2}{(1+2\sigma^2)}}x^2}\sim N(0, \sigma^2/(1+2\sigma^2))$
 \section*{Exercise 4}
 \section*{Exercise 5}
 

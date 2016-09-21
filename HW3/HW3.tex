@@ -79,13 +79,13 @@ Since $Area_{square}=1$, $Area_{circle}=\frac{\pi}{2^2}=\frac{\pi}{4}$ as stated
 \hlkwd{mean}\hlstd{(estimates_of_points_in_circle)}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.785135
+## [1] 0.785465
 \end{verbatim}
 \begin{alltt}
 \hlkwd{var}\hlstd{(estimates_of_points_in_circle)}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.0001555804
+## [1] 0.0001660909
 \end{verbatim}
 \begin{alltt}
 \hlkwd{hist}\hlstd{(estimates_of_points_in_circle)}
@@ -110,19 +110,19 @@ Please note: I used the methods from "http://math.stackexchange.com/questions/12
 \includegraphics[width=0.60\linewidth]{figure/unnamed-chunk-3-1} 
 
 \end{knitrout}
-Based on the graph, it is clear that $f(x)$ converges to 0 close to 10, so using the method described in class, we will do the following
+Based on the graph, it is clear that $f(x)$ converges to 0 close to 10, so using the method described in class, we will do the following:
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlstd{n} \hlkwb{=} \hlnum{1e4}
 \hlstd{a} \hlkwb{=} \hlnum{0}
-\hlstd{b} \hlkwb{=} \hlnum{10} \hlcom{#as any value past 10 may be significantly greater than zero, but not x = 20, f(20) is approximately zero}
+\hlstd{b} \hlkwb{=} \hlnum{10}
 \hlstd{x} \hlkwb{=} \hlkwd{runif}\hlstd{(n, a, b)}
 \hlstd{y} \hlkwb{=} \hlkwd{f}\hlstd{(x)}
 \hlstd{(b}\hlopt{-}\hlstd{a)}\hlopt{/}\hlstd{n}\hlopt{*}\hlkwd{sum}\hlstd{(y)}
 \end{alltt}
 \begin{verbatim}
-## [1] 1.887044
+## [1] 1.876069
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -131,14 +131,40 @@ Based on the graph, it is clear that $f(x)$ converges to 0 close to 10, so using
 \begin{split}
 \int_{0}^{\infty}e^{\frac{-4x}{3}}x^3\delta x \implies \\
 \int_{0}^{\infty}x^3*e^{\frac{-4x}{3}}\delta x \implies \\
-\int_{0}^{\infty}x^{4-1}*e^{\frac{x}{3/4}}\delta x \implies \\
-\Gamma(4)*(\frac{3}{4})^4\int_{0}^{\infty}\frac{1}{\Gamma(4)*(\frac{3}{4})^4}*x^{4-1}*e^{\frac{x}{3/4}}\delta x
+\int_{0}^{\infty}x^{4-1}*e^{-\frac{x}{3/4}}\delta x \implies \\
+\Gamma(4)*(\frac{3}{4})^4\int_{0}^{\infty}\frac{1}{\Gamma(4)*(\frac{3}{4})^4}*x^{4-1}*e^{-\frac{x}{3/4}}\delta x
 \end{split}
 \end{equation}
 please recognize that $\frac{1}{\Gamma(4)*(\frac{3}{4})^4}*x^{4-1}*e^{\frac{x}{3/4}}\sim gamma(4,3/4)$
 
 $\therefore \Gamma(4)*(\frac{3}{4})^4\int_{0}^{\infty}\frac{1}{\Gamma(4)*(\frac{3}{4})^4}*x^{4-1}*e^{\frac{x}{3/4}}\delta x = \Gamma(4)*(\frac{3}{4})^4 = 1.898$
 \section*{Exercise 3}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{n} \hlkwb{=} \hlnum{1e4}
+\hlstd{a} \hlkwb{=} \hlopt{-}\hlnum{10}
+\hlstd{b} \hlkwb{=} \hlnum{10}
+\hlstd{x} \hlkwb{=} \hlkwd{runif}\hlstd{(n, a, b)}
+\hlstd{y} \hlkwb{=} \hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{(}\hlkwd{dnorm}\hlstd{(x,} \hlnum{0}\hlstd{,} \hlnum{2}\hlstd{))}\hlopt{^}\hlnum{2}\hlstd{)}
+\hlstd{(b}\hlopt{-}\hlstd{a)}\hlopt{/}\hlstd{n}\hlopt{*}\hlkwd{sum}\hlstd{(y)}
+\end{alltt}
+\begin{verbatim}
+## [1] 19.86586
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\begin{equation}
+\begin{split}
+E_{f}(h(x)) = \int_{x}\frac{1}{\sqrt{2\pi\sigma^{2}}}e^{-\frac{1}{2\sigma^2}x^2}*e^{-x^2} \delta x = \\
+\int_{x}\frac{1}{\sqrt{2\pi\sigma^{2}}}e^{-\frac{1}{2\sigma^2}x^2 -\frac{2\sigma^2}{2\sigma^2}x^2} \delta x = \\
+\int_{x}\frac{1}{\sqrt{2\pi\sigma^{2}}}e^{-\frac{1}{2\sigma^2}x^2(1+2\sigma^2)} \delta x = \\
+\int_{x}\frac{1}{\sqrt{2\pi\sigma^{2}}}e^{-\frac{1}{\frac{2\sigma^2}{(1+2\sigma^2)}}x^2} \delta x = \\
+1/\sqrt{(1+2\sigma^2)}\int_{x}\frac{1}{\sqrt{2\pi\sigma^{2}/(1+2\sigma^2)}}e^{-\frac{1}{\frac{2\sigma^2}{(1+2\sigma^2)}}x^2} \delta x =
+1/\sqrt{(1+2\sigma^2)}
+\end{split}
+\end{equation}
+This is true because $\frac{1}{\sqrt{2\pi\sigma^{2}/(1+2\sigma^2)}}e^{-\frac{1}{\frac{2\sigma^2}{(1+2\sigma^2)}}x^2}\sim N(0, \sigma^2/(1+2\sigma^2))$
 \section*{Exercise 4}
 \section*{Exercise 5}
 
