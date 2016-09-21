@@ -82,7 +82,17 @@ E_{f}(h(x)) = \int_{x}\frac{1}{\sqrt{2\pi\sigma^{2}}}e^{-\frac{1}{2\sigma^2}x^2}
 \end{split}
 \end{equation}
 This is true because $\frac{1}{\sqrt{2\pi\sigma^{2}/(1+2\sigma^2)}}e^{-\frac{1}{\frac{2\sigma^2}{(1+2\sigma^2)}}x^2}\sim N(0, \sigma^2/(1+2\sigma^2))$
+
 \section*{Exercise 4}
+The min probably of transiting to state 3 is $min{0.1, 0.2,0.4}=0.1\therefore P_{3}(T_{3}>n)\leq (0.9)^{n}$
+$(0.9)^{n} \rightarrow 0$ as $n \rightarrow \infty$, so state 3 is recurrent.
+
+The min probably of transiting to state 2 is $min{0.2, 0.5,0.4}=0.2\therefore P_{2}(T_{2}>n)\leq (0.8)^{n}$
+$(0.2)^{n} \rightarrow 0$ as $n \rightarrow \infty$, so state 2 is recurrent.
+
+The min probably of transiting to state 1 is $min{0.7, 0.3,0.2}=0.2\therefore P_{1}(T_{1}>n)\leq (0.8)^{n}$
+$(0.2)^{n} \rightarrow 0$ as $n \rightarrow \infty$, so state 1 is recurrent.
+
 \section*{Exercise 5}
 
 \end{document}

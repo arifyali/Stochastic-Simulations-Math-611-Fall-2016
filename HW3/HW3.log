@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  20 SEP 2016 22:58
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  21 SEP 2016 14:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -467,7 +467,7 @@ Package color Info: Redefining color shadecolor on input line 143.
 Here is how much of TeX's memory you used:
  4736 strings out of 493089
  66797 string characters out of 6134842
- 136884 words of memory out of 5000000
+ 137884 words of memory out of 5000000
  8131 multiletter control sequences out of 15000+600000
  7818 words of font info for 32 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -486,7 +486,7 @@ b></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb
 sr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></us
 r/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb>
 
-Output written on HW3.pdf (3 pages, 145696 bytes).
+Output written on HW3.pdf (3 pages, 148530 bytes).
 PDF statistics:
  79 PDF objects out of 1000 (max. 8388607)
  56 compressed objects within 1 object stream
