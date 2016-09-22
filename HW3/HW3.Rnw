@@ -113,5 +113,30 @@ d-y
 d
 \end{array}\right)}
 \end{equation}
+To move from 0 to 0,
+$p(0,0) = \frac{\left(\begin{array}{c}
+0\\
+0
+\end{array}\right)\left(\begin{array}{c}
+2d-0\\
+d-0
+\end{array}\right)}{\left(\begin{array}{c}
+2d\\
+d
+\end{array}\right)} = 1$
+Thus, 0 is an aborbing state.
 
+
+To move from d to d,
+$p(d,d) = \frac{\left(\begin{array}{c}
+2d\\
+d
+\end{array}\right)\left(\begin{array}{c}
+2d-2d\\
+d-d
+\end{array}\right)}{\left(\begin{array}{c}
+2d\\
+d
+\end{array}\right)} = 1$
+Thus, d is an aborbing state.
 \end{document}
