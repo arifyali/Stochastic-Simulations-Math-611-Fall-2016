@@ -67,37 +67,33 @@ Sept 22, 2016\\
 \LARGE\textbf{Homework 3}
   \end{center}
 \section*{Exercise 1}
-Since $Area_{square}=1$, $Area_{circle}=\frac{\pi}{2^2}=\frac{\pi}{4}$ as stated in the exercise. Therefore the number of points that are expected in the circle is $\frac{\pi/4}{1}= \pi/4$ Given that the orgin of the circle is at $(1/2,1/2)$ with a radius of $r=1/2$, the circle equation is $(x-\frac{1}{2})^2+(y-\frac{1}{2})^2=\frac{1}{4}$, so we should look for points with coordinates such that $(x-\frac{1}{2})^2+(y-\frac{1}{2})^2<\frac{1}{4}$. I assume that the circumference doesn't count as in the circle. Since the area of the circle is $\frac{\pi}{4}$, then the value of the percentage of points must be multipled by 4.
+Since $Area_{square}=1$, $Area_{circle}=\frac{\pi}{2^2}=\frac{\pi}{4}$ as stated in the exercise. Therefore the number of points that are expected in the circle is $\frac{\pi/4}{1}= \pi/4$ Given that the orgin of the circle is at $(1/2,1/2)$ with a radius of $r=1/2$, the circle equation is $(x-\frac{1}{2})^2+(y-\frac{1}{2})^2=\frac{1}{4}$, so we should look for points with coordinates such that $(x-\frac{1}{2})^2+(y-\frac{1}{2})^2\leq\frac{1}{4}$. I assume that the circumference counts as in the circle. Since the area of the circle is $\frac{\pi}{4}$, then the fraction of points bounded by the circle must be multipled by 4.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{points_in_circle} \hlkwb{=} \hlkwa{function}\hlstd{(}\hlkwc{z}\hlstd{)\{}
+\hlstd{points_in_circle} \hlkwb{=} \hlkwa{function}\hlstd{(}\hlkwc{z}\hlstd{,} \hlkwc{r}\hlstd{=}\hlnum{.5}\hlstd{)\{}
   \hlstd{points}\hlkwb{=} \hlkwd{data.frame}\hlstd{(}\hlkwc{x} \hlstd{=} \hlkwd{runif}\hlstd{(}\hlnum{1e3}\hlstd{),} \hlkwc{y} \hlstd{=} \hlkwd{runif}\hlstd{(}\hlnum{1e3}\hlstd{))}
-  \hlkwd{mean}\hlstd{((points}\hlopt{$}\hlstd{x}\hlopt{-}\hlnum{1}\hlopt{/}\hlnum{2}\hlstd{)}\hlopt{^}\hlnum{2}\hlopt{+}\hlstd{(points}\hlopt{$}\hlstd{y}\hlopt{-}\hlnum{1}\hlopt{/}\hlnum{2}\hlstd{)}\hlopt{^}\hlnum{2}\hlopt{<}\hlnum{1}\hlopt{/}\hlnum{4}\hlstd{)}
+  \hlkwd{mean}\hlstd{((points}\hlopt{$}\hlstd{x}\hlopt{-}\hlstd{r)}\hlopt{^}\hlnum{2}\hlopt{+}\hlstd{(points}\hlopt{$}\hlstd{y}\hlopt{-}\hlstd{r)}\hlopt{^}\hlnum{2}\hlopt{<=}\hlstd{r}\hlopt{^}\hlnum{2}\hlstd{)}
 \hlstd{\}}
 \hlstd{estimates_of_points_in_circle} \hlkwb{=} \hlnum{4}\hlopt{*}\hlkwd{sapply}\hlstd{(}\hlnum{1}\hlopt{:}\hlnum{1e3}\hlstd{, points_in_circle)}
 \hlkwd{mean}\hlstd{(estimates_of_points_in_circle)}
 \end{alltt}
 \begin{verbatim}
-## [1] 3.140304
+## [1] 3.139868
 \end{verbatim}
 \begin{alltt}
 \hlkwd{var}\hlstd{(estimates_of_points_in_circle)}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.002683615
+## [1] 0.002590909
 \end{verbatim}
-\begin{alltt}
-\hlkwd{hist}\hlstd{(estimates_of_points_in_circle)}
-\end{alltt}
 \end{kframe}
-\includegraphics[width=0.60\linewidth]{figure/unnamed-chunk-2-1} 
-
 \end{knitrout}
-Based on the estimated mean and the variance, the fixed range is very close to $\pi$.   
+Based on the estimated mean and the variance, the fixed range is very close to the real value of $\pi$.   
 \section*{Exercise 2}
 Please note: I used the methods from "http://math.stackexchange.com/questions/1200443/evaluating-difficult-monte-carlo-integration-in-r" to do monte carlo integration in R
 \subsection*{Part A}
+Solving via Simulation:
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -114,18 +110,19 @@ Based on the graph, it is clear that $f(x)$ converges to 0 close to 10, so using
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{n} \hlkwb{=} \hlnum{1e4}
-\hlstd{a} \hlkwb{=} \hlnum{0}
-\hlstd{b} \hlkwb{=} \hlnum{10}
-\hlstd{x} \hlkwb{=} \hlkwd{runif}\hlstd{(n, a, b)}
-\hlstd{y} \hlkwb{=} \hlkwd{f}\hlstd{(x)}
-\hlstd{(b}\hlopt{-}\hlstd{a)}\hlopt{/}\hlstd{n}\hlopt{*}\hlkwd{sum}\hlstd{(y)}
+\hlstd{MCint} \hlkwb{=} \hlkwa{function}\hlstd{(}\hlkwc{n} \hlstd{=}\hlnum{1e4}\hlstd{,} \hlkwc{a}\hlstd{,} \hlkwc{b}\hlstd{,} \hlkwc{f}\hlstd{)\{}
+  \hlstd{x} \hlkwb{=} \hlkwd{runif}\hlstd{(n, a, b)}
+  \hlstd{y} \hlkwb{=} \hlkwd{f}\hlstd{(x)}
+  \hlkwd{return}\hlstd{((b}\hlopt{-}\hlstd{a)}\hlopt{*}\hlkwd{mean}\hlstd{(y))}
+\hlstd{\}}
+\hlkwd{MCint}\hlstd{(}\hlnum{1e4}\hlstd{,}\hlnum{0}\hlstd{,}\hlnum{10}\hlstd{, f)}
 \end{alltt}
 \begin{verbatim}
-## [1] 1.917542
+## [1] 1.908676
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
+Based on the solution in part B, it is clear that the approximated value from the simulation is close to the actual value.
 \subsection*{Part B}
 \begin{equation}
 \begin{split}
@@ -137,21 +134,28 @@ Based on the graph, it is clear that $f(x)$ converges to 0 close to 10, so using
 \end{equation}
 please recognize that $\frac{1}{\Gamma(4)*(\frac{3}{4})^4}*x^{4-1}*e^{\frac{x}{3/4}}\sim gamma(4,3/4)$
 
-$\therefore \Gamma(4)*(\frac{3}{4})^4\int_{0}^{\infty}\frac{1}{\Gamma(4)*(\frac{3}{4})^4}*x^{4-1}*e^{\frac{x}{3/4}}\delta x = \Gamma(4)*(\frac{3}{4})^4 = 1.898$
+$\therefore \Gamma(4)*(\frac{3}{4})^4\int_{0}^{\infty}\frac{1}{\Gamma(4)*(\frac{3}{4})^4}*x^{4-1}*e^{\frac{x}{3/4}}\delta x = \Gamma(4)*(\frac{3}{4})^4 = 1.898$ which is close to the estimation from 2a.
 \section*{Exercise 3}
-I picked $(a,b) = (-10,10)$ based on $X\sim N(0,2^2)$
+Using the same logic in code from 2a
+I picked $(a,b) = (-10,10)$ based on the plot of the curve of $X\sim N(0,2^2)$
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{n} \hlkwb{=} \hlnum{1e4}
-\hlstd{a} \hlkwb{=} \hlopt{-}\hlnum{10}
-\hlstd{b} \hlkwb{=} \hlnum{10}
-\hlstd{x} \hlkwb{=} \hlkwd{runif}\hlstd{(n, a, b)}
-\hlstd{y} \hlkwb{=} \hlkwd{dnorm}\hlstd{(x,}\hlnum{0}\hlstd{,}\hlnum{2}\hlstd{)}\hlopt{*}\hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{x}\hlopt{^}\hlnum{2}\hlstd{)}
-\hlstd{(b}\hlopt{-}\hlstd{a)}\hlopt{/}\hlstd{n}\hlopt{*}\hlkwd{sum}\hlstd{(y)}
+\hlkwd{curve}\hlstd{(}\hlkwd{dnorm}\hlstd{(x,}\hlnum{0}\hlstd{,}\hlnum{2}\hlstd{),} \hlkwc{from} \hlstd{=} \hlopt{-}\hlnum{20}\hlstd{,} \hlnum{20}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=0.60\linewidth]{figure/unnamed-chunk-5-1} 
+
+\end{knitrout}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{MCint}\hlstd{(}\hlnum{1e4}\hlstd{,} \hlopt{-}\hlnum{10}\hlstd{,}\hlnum{10}\hlstd{,} \hlkwc{f} \hlstd{=} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)\{}\hlkwd{dnorm}\hlstd{(x,}\hlnum{0}\hlstd{,}\hlnum{2}\hlstd{)}\hlopt{*}\hlkwd{exp}\hlstd{(}\hlopt{-}\hlstd{x}\hlopt{^}\hlnum{2}\hlstd{)\})}
 \end{alltt}
 \begin{verbatim}
-## [1] 0.3327544
+## [1] 0.3320746
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -167,23 +171,39 @@ E_{f}(h(x)) = \int_{x}\frac{1}{\sqrt{2\pi\sigma^{2}}}e^{-\frac{1}{2\sigma^2}x^2}
 \end{equation}
 This is true because $\frac{1}{\sqrt{2\pi\sigma^{2}/(1+2\sigma^2)}}e^{-\frac{1}{\frac{2\sigma^2}{(1+2\sigma^2)}}x^2}\sim N(0, \sigma^2/(1+2\sigma^2))$
 
+Based on $\sigma^{2} = 4, E_{f}(h(x)) = \frac{1}{\sqrt{1+2*4}}=\frac{1}{3}$ This value is close to the estimation.
 \section*{Exercise 4}
-The min probably of transiting to state 3 is $min(0.1, 0.2,0.4)=0.1\therefore P_{3}(T_{3}>n)\leq (0.9)^{n}$ That's because all other chains possible, given n, are $\leq (0.9)^{n}$ where
-$(0.9)^{n} \rightarrow 0$ as $n \rightarrow \infty$, so state 3 is recurrent.
+Please recall the transtional matrix:
+\begin{equation}
+\left[\begin{array}{ccc}
+0.7 & 0.2 & 0.1\\
+0.3 & 0.5 & 0.2\\
+0.2 & 0.4 & 0.4
+\end{array}\right]
+\end{equation}
+The min probability of transiting from state i to state 3 is $min(0.1, 0.2,0.4)=0.1\therefore P_{3}(T_{3}>n)\leq (0.9)^{n}$ That's because all other chains possible, given n, are $\leq (0.9)^{n}$
+Thus, $(0.9)^{n} \rightarrow 0$ as $n \rightarrow \infty$, so state 3 is recurrent.
 
 For stage 1 and 2, the same logic is applied:
 
-The min probably of transiting to state 2 is $min(0.2, 0.5,0.4)=0.2\therefore P_{2}(T_{2}>n)\leq (0.8)^{n}$ where
+The min probability of transiting from state i to state 2 is $min(0.2, 0.5,0.4)=0.2\therefore P_{2}(T_{2}>n)\leq (0.8)^{n}$ where
 $(0.8)^{n} \rightarrow 0$ as $n \rightarrow \infty$, so state 2 is recurrent.
 
-The min probably of transiting to state 1 is $min{0.7, 0.3,0.2}=0.2\therefore P_{1}(T_{1}>n)\leq (0.8)^{n}$ where
+The min probability of transiting from state i to state 1 is $min{0.7, 0.3,0.2}=0.2\therefore P_{1}(T_{1}>n)\leq (0.8)^{n}$ where
 $(0.8)^{n} \rightarrow 0$ as $n \rightarrow \infty$, so state 1 is recurrent.
 
 \section*{Exercise 5}
-The state space is {1...d}
-
-$(x,y)\sim hypergeometric(d, 2d, 2x)$ where $k = y \therefore$
-
+The state space is {1...$d$}
+The daughter genes will inherit $d$ subunit from the parent gene, which has $2d$ subunits. Since $x_{0}$ represents the number of mutant subunits the parent has before the duplication, the daughter will get m of those genes where $m<d$. There are $\left(\begin{array}{c}
+2x_{0}\\
+m
+\end{array}\right)$ possiblities of that happening. The daughter also require $d-m$ normal genes from $2d-2x_{0}$ normal subunits from the parent with $\left(\begin{array}{c}
+2d-2x_{0}\\
+d-m
+\end{array}\right)$ possibilities. There are a total of $\left(\begin{array}{c}
+2d\\
+d
+\end{array}\right)$ different possibilities from the parent to daughter. Subbing $x_{0}$ for x and $m$ for $y$: 
 \begin{equation}
 p(x,y) = \frac{\left(\begin{array}{c}
 2x\\
@@ -196,19 +216,8 @@ d-y
 d
 \end{array}\right)}
 \end{equation}
-To move from 0 to 0,
-$p(0,0) = \frac{\left(\begin{array}{c}
-0\\
-0
-\end{array}\right)\left(\begin{array}{c}
-2d-0\\
-d-0
-\end{array}\right)}{\left(\begin{array}{c}
-2d\\
-d
-\end{array}\right)} = 1$
-Thus, 0 is an aborbing state.
 
+This is a hypergeometric distribution.
 
 To move from d to d,
 $p(d,d) = \frac{\left(\begin{array}{c}
@@ -222,6 +231,4 @@ d-d
 d
 \end{array}\right)} = 1$
 Thus, d is an aborbing state.
-
-
 \end{document}

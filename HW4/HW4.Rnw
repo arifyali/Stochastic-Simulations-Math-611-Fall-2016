@@ -1,0 +1,191 @@
+\documentclass{article}
+\usepackage{amscd, amssymb, amsmath, verbatim, setspace}
+\usepackage[left=1.0in, right=1.0in, top=1.0in, bottom=1.0in]{geometry}
+\usepackage{mathrsfs}
+\usepackage{listings}
+<<echo=FALSE>>=
+  library(knitr)
+opts_knit$set(root.dir = "~/Documents/Georgetown/Stochastic Simulations Math 611 Fall 2016/",concordance=TRUE)
+opts_chunk$set(fig.keep="high", out.width="0.60\\linewidth")
+@
+
+\begin{document}
+\begin{flushright}
+Arif Ali\\
+Math 611 Stochastic Simulation\\
+Sept 29, 2016\\
+\end{flushright}
+
+\begin{center}
+\LARGE\textbf{Homework 4}
+  \end{center}
+\section*{Exercise 1}
+<<>>=
+h = function(x){
+  exp(-x)/(1+x^2)
+}
+n = 1e4
+
+H = integrate(h, 0, 1)
+@
+The analytical evaluation of $\int_{0}^{1} \frac{e^{-x}}{(1+x^2)} \delta x$ is \Sexpr{H$value}.
+\subsection*{Part A}
+\begin{equation}
+  F_X(x) = c \int_{0}^{x} 1 \delta t = c \big|_0^x t = cx 
+\end{equation}
+
+\begin{equation}
+  1 = F_X(1) = c*1 \implies c = 1 \therefore F_X(x) = x
+\end{equation}
+
+\begin{equation}
+  \hat{I} = \int_{0}^{1} \frac{exp(-x)}{1+x^2}*1/1 dx \approx \frac{1}{n}\sum_{i=1}^{n} \frac{e^{-x}}{1+x^2}
+\end{equation}
+<<>>=
+u = runif(n,0,1)
+x = u # F^-1(x) = x
+I_hat = h(x)
+summary(I_hat)
+var(I_hat)
+@
+\subsection*{Part B}
+\begin{equation}
+\begin{split}
+  G_{X}(x) = c*\int_{0}^{x} \frac{e^{-x}}{1-e^{-1}} \delta x =\\
+  c*\frac{1}{1-e^{-1}}\int_{0}^{x} e^{-x} \delta x =\\ 
+  c * \frac{1}{1-e^{-1}}*(1-e^{-x})
+\end{split}
+\end{equation}
+
+\begin{equation}
+1 = G_X(1) = c * \frac{1}{1-e^{-1}}*(1-e^{-1}) = c \implies c = 1 \therefore G(x) = \frac{1}{1-e^{-1}}*(1-e^{-x})
+\end{equation}
+
+To find $G^{-1}(x)$, we do the following:
+\begin{equation}
+\begin{split}
+y = \frac{1}{1-e^{-1}}*(1-e^{-x}) \implies \\
+y*(1-e^{-1}) = 1 - e^{-x} \implies \\
+1 - y*(1-e^{-1}) = e^{-x} \implies \\
+ln(1 - y*(1-e^{-1})) = -x \implies \\
+x = -ln(1 - y*(1-e^{-1})) \\
+\therefore G^{-1}(x) = -ln(1 - x*(1-e^{-1}))
+\end{split}
+\end{equation}
+
+\begin{equation}
+\begin{split}
+  \hat{I} = \int_{0}^{1} \frac{exp(-x)}{1+x^2}*\frac{1}{(\frac{e^{-x}}{1-e^{-1}})} dx \approx \\
+  \frac{1}{n}\sum_{i=1}^{n} \frac{\frac{e^{-x}}{1+x^2}}{\frac{e^{-x}}{1-e^{-1}}} = \\
+  \frac{1-e^{-1}}{n}\sum_{i=1}^{n}\frac{1}{1+x^2}
+  \end{split}
+\end{equation}
+<<>>=
+u = runif(n,0,1)
+x = -log(1-u*(1-exp(-1))) #G^-1(U)
+
+I_hat = (1-exp(-1))*(1/(1+x^2)) 
+summary(I_hat)
+var(I_hat)
+@
+\section*{Exercise 2}
+If $\int_{0}^{1} exp(x) \delta x$ is evaluated analytically, the result is \Sexpr{integrate(function(x)exp(x), 0, 1)$value}.
+
+For the antithetic variable appoarch let $h(x) = e^{x}$ and $f(x) = 1$
+\begin{equation}
+  \begin{split}
+  F(x) = \int_{0}^{x} 1 \delta x = x \implies F^{-1}(x) =x
+  \end{split}
+\end{equation}
+<<>>=
+MCint = function(n =1e4, a, b, f){
+  x = runif(n, a, b)
+  y = f(x)
+  return((b-a)*(y))
+}
+n = 1e3
+U = runif(n, 0, 1)
+X = U
+Y = 1 - U
+anti = 1/(2)*(exp(U)+exp(1-U))
+MC = MCint(n,0,1, function(x){exp(x)})
+  
+var(anti) < var(MC)
+@
+The percent reduction in variance is approximately \Sexpr{(var(MC) - var(anti))/var(MC)*100}\%.
+
+When 1000 estimates using the antithetic variable appoarch and MC integration
+<<>>=
+anti = c()
+MC = c()
+for(i in 1:1000){
+  n = 1e3
+  U = runif(n, 0, 1)
+  X = U
+  Y = 1 - U
+  anti[i] = mean(1/(2)*(exp(U)+exp(1-U)))
+  MC[i] = mean(MCint(n,0,1, function(x){exp(x)}))
+ }
+var(anti) < var(MC)
+
+(var(MC) - var(anti))/var(MC)*100
+@
+The percent reduction in variance is approximately \Sexpr{(var(MC) - var(anti))/var(MC)*100}\%.
+
+\section*{Exercise 3}
+States $1$ and $5$ are transient because there are one or more ways in which their states can never return.
+
+States $2$, $3$, and $4$ are recurrent.
+
+$\{2,4\}$ is a closed set that is irreducible. 
+\section*{Exercise 4}
+\begin{equation}
+  \begin{split}
+  \left(\begin{array}{cccc}
+p_{1} & p_{2} & p_{3} & p_{4}\end{array}\right)\left(\begin{array}{cccc}
+0.7 & 0 & 0.3 & 0\\
+0.6 & 0 & 0.4 & 0\\
+0 & 0.5 & 0 & 0.5\\
+0 & 0.4 & 0 & 0.6
+\end{array}\right)=\left(\begin{array}{cccc}
+p_{1} & p_{2} & p_{3} & p_{4}\end{array}\right) \implies \\
+\left(\begin{array}{c}
+0.7p_{1}+0.6p_{2}\\
+0.4p_{3}+0.4p_{4}\\
+0.3p_{1}+0.4p_{2}\\
+0.5p_{3}+0.6p_{4}
+\end{array}\right)=\left(\begin{array}{c}
+p_{1}\\
+p_{2}\\
+p_{3}\\
+p_{4}
+\end{array}\right)
+  \end{split}
+\end{equation}
+
+From the matrix we can see $p_{1} = 2p_2$ and $0.6p_{1}+0.4p_2=p_3\implies p_2=p_3$ and $0.5p_3+0.6p_4=p_4 \implies p_4 =1.25p_3$
+
+Since $p_1+p_2+p_3+p_4 =1 = 2p_3+p_3+p_3+1.25p_3 = 1 \implies p_3 = \frac{1}{5.25}$
+\begin{equation}
+\begin{split}
+p_1 = 2/5.25 \\
+p_2 = 1/5.25 \\ 
+p_4 = 1.25/5.25 \\
+\end{split}
+\end{equation}
+The stationary distribution is $\left(\begin{array}{cccc}
+\frac{2}{5.25} & \frac{1}{5.25} & \frac{1}{5.25} & \frac{1.25}{5.25}\end{array}\right)$.
+\section*{Exercise 5}
+We know that $X_{n}\sim poisson(t)$ and $X_{n+1} = \psi_{n+1}+R(X_{n})$ where $\psi_{n+1} \sim poisson(\lambda)$ and $R(X_{n}) \sim poisson(pt)$. The addition of two poisson variables combines the lambda values so $X_{n+1} \sim poisson(\lambda + pt)$. In order for the stationary distribution to work $X_{n} = X_{n+1}$
+
+\begin{equation}
+  \begin{split}
+  t = \lambda + pt \implies \\
+  t - pt = \lambda \implies \\
+  t(1-p) = \lambda \implies \\
+  t = \frac{\lambda}{1-p}
+  \end{split}
+\end{equation}
+
+$\therefore$ the stationary distribution is $poisson(\frac{\lambda}{1-p})$
+\end{document}

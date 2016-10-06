@@ -1,0 +1,132 @@
+\documentclass{article}
+\usepackage{amscd, amssymb, amsmath, verbatim, setspace}
+\usepackage[left=1.0in, right=1.0in, top=1.0in, bottom=1.0in]{geometry}
+\usepackage{mathrsfs}
+\usepackage{listings}
+<<echo=FALSE>>=
+  library(knitr)
+opts_knit$set(root.dir = "~/Documents/Georgetown/Stochastic Simulations Math 611 Fall 2016/",concordance=TRUE)
+opts_chunk$set(fig.keep="high", out.width="0.60\\linewidth")
+@
+
+\begin{document}
+\begin{flushright}
+Arif Ali\\
+Math 611 Stochastic Simulation\\
+Oct 06, 2016\\
+\end{flushright}
+
+\begin{center}
+\LARGE\textbf{Homework 5}
+  \end{center}
+\section*{Exercise 1}
+$1,2,3$ are all aperiodical because $gcd(1)=gcd(2)=gcd(3)=1$
+\section*{Exercise 2}
+States $1,2$ are periodic with $gcd(1)=gcd(2)=2$ so the period for both stages is also 2.
+\section*{Exercise 3}
+
+\begin{equation} 
+\begin{split}
+f(x|\theta) = \frac{1}{\theta+\frac{1}{2}-(\theta-\frac{1}{2})}= 1
+\end{split}
+\end{equation}
+From $f(x|\theta)$, we know that $L(\theta|x) = \prod_{i=1}^{n} 1^{n} =1$. This means that there is no unique value for $\theta$ 
+
+However $X_{(1)} > \theta -\frac{1}{2}$ and $X_{(n)} < \theta+ \frac{1}{2}$
+
+From Pitman 319, $f_{min}(x)=n(1-F(x))^{n-1}f(x)$ and $f_{max}(x)=n(F(x))^{n-1}f(x)$
+\begin{equation}
+\begin{split}
+X_{(1)} = min(X_1...X_n) \sim n(1/2+\theta-x)^{n-1} \\
+X_{(n)} = max(X_1...X_n) \sim n(1/2-\theta+x)^{n-1}
+\end{split}
+\end{equation}
+The MLE of $\theta$ should occur when $X_{(1)}=X_{(n)}$
+
+\begin{equation}
+\begin{split}
+n(1/2+\theta-x_{(1)})^{n-1} = n(1/2-\theta+x_{(n)})^{n-1} \implies \\
+1/2+\theta-x_{(1)} = 1/2-\theta+x_{(n)} \implies \\
+\theta-x_{(1)} = -\theta+x_{(n)} \implies \\
+\theta = \frac{x_{(1)} + x_{(n)}}{2}
+\end{split}
+\end{equation}
+$\hat{\theta} \sim \frac{X_{(1)} + X_{(n)}}{2}$
+\section*{Exercise 4}
+\subsection*{Part A}
+Let the prior be $\theta \sim unif(0,1)$ and $X|\theta \sim Bernoulli(\theta)$
+\begin{equation}
+\begin{split}
+p(\theta|X) \propto \prod_{i=1}^{n} p(X_{i}|\theta) * p(\theta) = \\
+\prod_{i=1}^{n} \theta^{x_i}(1-\theta)^{1-x_i} = \\
+\theta^{\sum_{i=1}^{n}x_i}(1-\theta)^{\sum_{i=1}^{n}1-x_i} = \\
+\theta^{\sum_{i=1}^{n}x_i}(1-\theta)^{n-\sum_{i=1}^{n}x_i}
+\end{split}
+\end{equation}
+Let $y = \sum_{i=1}^{n}x_i$ so,
+\begin{equation}
+\begin{split}
+\theta^{y}(1-\theta)^{n-y} = \theta^{(y+1)-1}*(1-\theta)^{(n-y+1)-1}\propto beta(y+1, n-y+1)
+\end{split}
+\end{equation}
+$\therefore$ the Bayes Estimate is $\frac{y+1}{y+1+n-y+1}=\frac{y+1}{n+2}$
+\subsection*{Part B}
+\begin{equation}
+\begin{split}
+L(\theta) =\prod_{i=1}^{n} \theta^{x_i}(1-\theta)^{1-x_i} \implies \\
+Log(L(\theta)) = \sum_{i=1}^{n} log(\theta^{x_i}(1-\theta)^{1-x_i}) = \\
+\sum_{i=1}^{n} log(\theta^{x_i}) + \sum_{i=1}^{n} log((1-\theta)^{1-x_i}) = \\
+\sum_{i=1}^{n} x_i log(\theta) + \sum_{i=1}^{n} {1-x_i} * log(1-\theta) = \\
+n\bar{x}*log(\theta) + (n-n\bar{x})* log(1-\theta)
+\end{split}
+\end{equation}
+\begin{equation}
+\begin{split}
+\delta/d\theta(log(L(\theta))) = \frac{n\bar{x}}{\theta} - \frac{n-n\bar{x}}{1-\theta} = 0 \implies \\
+\frac{n\bar{x}}{\theta} = \frac{n-n\bar{x}}{1-\theta} \implies \\ 
+n\bar{x}*(1-\theta) = (n-n\bar{x})(\theta) \implies \\
+n\bar{x} = n\theta
+\end{split}
+\end{equation}
+$\therefore \hat{\theta}=\bar{x} = \frac{y}{n}$
+
+Since the prior distribution is uniform, $E(\theta) = \frac{1}{2}$
+\begin{equation}
+\begin{split}
+\frac{1}{2}(1-\omega)+\frac{y}{n}(\omega) = \frac{y+1}{n+2} \implies \\
+\omega = \frac{n}{n+2} \implies \\
+1-\omega =\frac{2}{n+2}
+\end{split}
+\end{equation}
+
+\begin{equation}
+\frac{1}{2}(\frac{2}{n+2})+\frac{y}{n}(\frac{n}{n+2}) = \frac{y+1}{n+2}
+\end{equation}
+
+
+\section*{Exercise 5}
+Let $f(x;\theta)=e^{-(x-\theta)}$, $Y_{1}=min(X_{i})$, and $T = T(X_{1},...,X{n})$
+
+\begin{equation}
+F(x) = \int_{\theta}^{x} e^{-(x-\theta)}dx = 1-e^{\theta-x}
+\end{equation}
+From Pitman 319, $f_{min}(x)=n(1-F(x))^{n-1}f(x)$
+
+\begin{equation}
+\begin{split}
+f_{min}(x) = n(1-(1-e^{\theta-x}))^{n-1}e^{-(x-\theta)} = \\
+n(e^{\theta-x})^{n-1}e^{-(x-\theta)} = \\
+n*(e^{\theta-x})^{n}
+\end{split}
+\end{equation}
+
+\begin{equation}
+\begin{split}
+P(X_{1},....,X_{n}|T=t)= \frac{e^{n\theta-\sum x_{i}}}{n*(e^{\theta-t})^{n}} = \\
+\frac{1}{n}e^{n\theta-\sum x_{i}-(\theta-t)n} = \\
+\frac{1}{n}e^{-\sum x_{i}-(-t)n}
+\end{split}
+\end{equation}
+Since the conditional density and range do not depend on $\theta$, $Y_{1}=min(X_{i})$ is a sufficent Statistic
+
+\end{document}
