@@ -1,0 +1,123 @@
+\documentclass{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage{amscd, amssymb, amsmath, verbatim, setspace}
+\usepackage[left=1.0in, right=1.0in, top=1.0in, bottom=1.0in]{geometry}
+\usepackage{mathrsfs}
+\usepackage{listings}
+
+
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+\begin{flushright}
+Arif Ali\\
+Math 611 Stochastic Simulation\\
+Oct 13, 2016\\
+\end{flushright}
+
+\begin{center}
+\LARGE\textbf{Homework 6}
+  \end{center}
+\section*{Exercise 1}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{x} \hlkwb{=} \hlkwd{c}\hlstd{(}\hlnum{169.14353}\hlstd{,} \hlnum{135.73850}\hlstd{,} \hlnum{102.46566}\hlstd{,}  \hlnum{80.91151}\hlstd{,} \hlnum{148.45425}\hlstd{,} \hlnum{144.68948}\hlstd{,} \hlnum{106.56257}\hlstd{,} \hlnum{104.83559}\hlstd{,}
+\hlnum{94.81216}\hlstd{,} \hlnum{109.47048}\hlstd{,}  \hlnum{95.94150}\hlstd{,} \hlnum{123.84673}\hlstd{,}  \hlnum{87.18401}\hlstd{,} \hlnum{104.73420}\hlstd{,} \hlnum{111.94364}\hlstd{,} \hlnum{119.69467}\hlstd{,}
+\hlnum{151.77627}\hlstd{,}  \hlnum{81.80692}\hlstd{,} \hlnum{116.58660}\hlstd{,}  \hlnum{98.28933}\hlstd{)}
+
+\hlstd{mu_1} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{100}\hlstd{)}
+\hlstd{mu_2} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{120}\hlstd{)}
+\hlcom{## as well as the latent variable parameters}
+\hlcom{#tau_1 <- c(1-0.7) # 1-W}
+\hlstd{W} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{0.7}\hlstd{)} \hlcom{# W}
+\hlkwa{for}\hlstd{( i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{12}\hlstd{) \{}
+  \hlcom{## Given the observed data, as well as the distribution parameters,}
+  \hlcom{## what are the latent variables?}
+  \hlstd{T_1} \hlkwb{<-} \hlstd{(}\hlnum{1}\hlopt{-}\hlstd{W[i])} \hlopt{*} \hlkwd{dnorm}\hlstd{(x, mu_1[i],} \hlkwc{sd} \hlstd{=} \hlkwd{sqrt}\hlstd{(}\hlnum{20}\hlstd{))}
+  \hlstd{T_2} \hlkwb{<-} \hlstd{W[i]} \hlopt{*} \hlkwd{dnorm}\hlstd{(x, mu_2[i],} \hlkwc{sd} \hlstd{=} \hlkwd{sqrt}\hlstd{(}\hlnum{25}\hlstd{))}
+  \hlstd{P_1} \hlkwb{<-} \hlstd{T_1} \hlopt{/} \hlstd{(T_1} \hlopt{+} \hlstd{T_2)}
+  \hlstd{P_2} \hlkwb{<-} \hlstd{T_2} \hlopt{/} \hlstd{(T_1} \hlopt{+} \hlstd{T_2)} \hlcom{## note: P_2 = 1 - P_1}
+  \hlcom{#tau_1[i+1] <- mean(P_1)}
+  \hlstd{W[i}\hlopt{+}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlkwd{mean}\hlstd{(P_2)}
+  \hlcom{## Given the observed data, as well as the latent variables,}
+  \hlcom{## what are the population parameters}
+  \hlstd{mu_1[i}\hlopt{+}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlkwd{sum}\hlstd{( P_1} \hlopt{*} \hlstd{x)} \hlopt{/} \hlkwd{sum}\hlstd{(P_1)}
+  \hlstd{mu_2[i}\hlopt{+}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlkwd{sum}\hlstd{( P_2} \hlopt{*} \hlstd{x)} \hlopt{/} \hlkwd{sum}\hlstd{(P_2)}
+\hlstd{\}}
+\hlkwd{data.frame}\hlstd{(mu_1, mu_2, W)[}\hlopt{-}\hlnum{1}\hlstd{,]}
+\end{alltt}
+\begin{verbatim}
+##         mu_1     mu_2         W
+## 2   96.04482 133.4018 0.4925329
+## 3   98.20615 138.6084 0.4019140
+## 4   99.49604 141.4485 0.3563159
+## 5  100.38478 143.5734 0.3255391
+## 6  101.02974 145.4095 0.3022692
+## 7  101.17853 145.8059 0.2972582
+## 8  101.24208 145.9554 0.2952656
+## 9  101.27532 146.0340 0.2942234
+## 10 101.29500 146.0809 0.2936057
+## 11 101.30746 146.1106 0.2932139
+## 12 101.31569 146.1304 0.2929552
+## 13 101.32127 146.1437 0.2927797
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\section*{Exercise 2}
+\subsection*{Part A}
+Since $X\sim N(0,1) \implies X^2 \sim Chi-squared(1)$ then $Z_{1}^{2} \sim Chi-squared(1)$. 
+\section*{Exercise 3}
+
+\section*{Exercise 4}
+
+
+\end{document}
