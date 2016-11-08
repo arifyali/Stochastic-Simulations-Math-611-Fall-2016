@@ -21,9 +21,10 @@ Oct 13, 2016\\
   \end{center}
 \section*{Exercise 1}
 <<>>=
-x = c(169.14353, 135.73850, 102.46566,  80.91151, 148.45425, 144.68948, 106.56257, 104.83559,
-94.81216, 109.47048,  95.94150, 123.84673,  87.18401, 104.73420, 111.94364, 119.69467,
-151.77627,  81.80692, 116.58660,  98.28933)
+x = c(169.14353, 135.73850, 102.46566,  80.91151, 148.45425, 
+      144.68948, 106.56257, 104.83559,94.81216, 109.47048,  
+      95.94150, 123.84673,  87.18401, 104.73420, 111.94364, 
+      119.69467, 151.77627,  81.80692, 116.58660,  98.28933)
 
 mu_1 <- c(100)
 mu_2 <- c(120)
@@ -38,7 +39,7 @@ for( i in 1:12) {
   P_1 <- T_1 / (T_1 + T_2)
   P_2 <- T_2 / (T_1 + T_2) ## note: P_2 = 1 - P_1
   #tau_1[i+1] <- mean(P_1)
-  W[i+1] <- mean(P_2)
+  W[i+1] <- mean(P_1)
   ## Given the observed data, as well as the latent variables,
   ## what are the population parameters
   mu_1[i+1] <- sum( P_1 * x) / sum(P_1)
@@ -48,16 +49,147 @@ data.frame(mu_1, mu_2, W)[-1,]
 @
 \section*{Exercise 2}
 \subsection*{Part A}
-Since $X\sim N(0,1) \implies X^2 \sim Chi-squared(1)$ then $Z_{1}^{2} \sim Chi-squared(1)$. 
-begin{equation}
-begin{split}
-f(X=x | X\sim \theta_{1} Z_{1}^{2}) = \theta_{1}*
-end{split}
-end{equation}
+Since $X\sim N(0,1) \implies X^2 \sim Chi-squared(1)$ then $Z_{1}^{2} \sim Chi-squared(1)$.
+
+By modifying the derivation from http://www.math.uah.edu/stat/special/ChiSquare.html:
+please note $f(x)$ and $F(x)$ refer to the PDF and CDF of $N(0,1)$
+\begin{equation}
+\begin{split}
+p(X=x | X\sim \theta_{1} Z_{1}^{2}) \implies \\
+p(-\sqrt{x/\theta_1}<Z_1<\sqrt{x/\theta_1}) = 2*F(\sqrt{x/\theta_{1}}) - 1
+\end{split}
+\end{equation}
+
+\begin{equation}
+\begin{split}
+d/\delta x(2*F(\sqrt{x/\theta_{1}})-1)= \\
+2*1/2*1/\sqrt{(}\theta_{1})*x^{1/2-1}*f(\sqrt{x/\theta_{1}})=\\
+1/\sqrt{\theta_{1}}*x^{1/2-1}*\frac{1}{\sqrt{2\pi}}e^{(\sqrt{x/\theta_{1}})^{2}/2}=\\
+\frac{1}{\sqrt{\pi}}*\frac{1}{\sqrt{2\theta_{1}}}*x^{1/2-1}*e^{\frac{1}{2\theta_{1}}x} =\\
+\frac{1}{\sqrt{\pi}}*(\frac{1}{2\theta_{1}})^{1/2}*x^{1/2-1}*e^{\frac{1}{2\theta_{1}}x} \sim Gamma(\frac{1}{2},\frac{1}{2\theta_{1}})
+\end{split}
+\end{equation}
+\subsection*{Part B}
+From Part A, we know that $\theta_{1}*Z_{1}^{2} \sim Gamma(\frac{1}{2},\frac{1}{2\theta_{1}})$. Using this same logic, $\theta_{2}*Z_{2}^{2} \sim Gamma(\frac{1}{2},\frac{1}{2\theta_{2}})$, so by using Method of momments on one of the theta parameters, it should mirror the results of the other theta parameter.
+\begin{equation}
+\begin{split}
+E(\theta_{1}*Z_{1}^{2}{}^{1})=E(\theta_{1}*Z_{1}^{2})=\frac{\frac{1}{2}}{\frac{1}{2\theta_{1}}}=\\
+\theta_{1}E
+(\theta_{1}*Z_{1}^{2})= \\
+Var(\theta_{1}*Z_{1}^{2})+(E(\theta_{1}*Z_{1}^{2}))^{2}=\\
+2(\theta_{1})^{2}+\theta_{1}^{2}=3\theta_{1}^{2}
+\end{split}
+\end{equation}
+\subsection*{Part C}
+<<>>=
+theta_1 = 0.3
+theta_2 = 1-theta_1
+W = c()
+for(i in 1:1e3){
+  if(runif(1)< theta_1){
+    W[i] = theta_1*rchisq(1,1)
+  } else {
+    W[i] = theta_2*rchisq(1,1)
+  }
+}
+
+for( i in 1:12) {
+  ## Given the observed data, as well as the distribution parameters,
+  ## what are the latent variables?
+  T_1 <- dgamma(W,0.5, 1/(2*theta_1))
+  T_2 <- dgamma(W,0.5, 1/(2*theta_2))
+  P_1 <- T_1 / (T_1 + T_2)
+  P_2 <- T_2 / (T_1 + T_2)
+  
+  theta_1[i+1] <-  sum( P_1 * W) / sum(P_1)
+  theta_2[i+1] <- sum( P_2 * W) / sum(P_2)
+
+}
+data.frame(theta_1, theta_2)[-1,]
+@
+
 
 \section*{Exercise 3}
+\subsection*{Part A}
+\begin{equation}
+\left(\begin{array}{cccc}
+0.5 & 0.5 & 0 & 0\\
+0.05 & 0.5 & 0.45 & 0\\
+0 & 0.1 & 0.5 & 0.4\\
+0 & 0 & 0.3 & 0.7
+\end{array}\right)
+\end{equation}
 
+\subsection*{Part B}
+Let $\pi(0) = c$
+\begin{equation}
+\begin{split}
+\pi(1) = \pi(0)*\frac{p_{0}}{q_{1}}=\pi(0)*\frac{0.5}{0.05} = 10c \\
+\pi(2) = \pi(1)*\frac{.45}{0.1}=45c \\
+\pi(3) = \pi(2)*\frac{.4}{0.3}=60c
+\end{split}
+\end{equation}
+
+\begin{equation}
+\begin{split}
+\pi(0)+\pi(1)+\pi(2)+\pi(3)=1= \\
+c+10c+45c+60c = 116c \implies \\
+c=\frac{1}{116}
+\end{split}
+\end{equation}
+So:
+\begin{equation}
+\begin{split}
+\pi(0)+\pi(1)+\pi(2)+\pi(3)=1= \\
+c+10c+45c+60c = 116c \implies \\
+c=\frac{1}{116}
+\end{split}
+\end{equation}
+
+\begin{equation}
+\begin{split}
+\pi(0) = \frac{1}{116}\\
+\pi(1) = \frac{10}{116}\\
+\pi(2) = \frac{45}{116}\\
+\pi(3) = \frac{60}{116}
+\end{split}
+\end{equation}
 \section*{Exercise 4}
+From class, we know that:
 
+\begin{equation}
+\left(\begin{array}{cccc}
+0 & 3/3 & 0 & 0\\
+1/3 & 0 & 2/3 & 0\\
+0 & 2/3 & 0 & 1/3\\
+0 & 0 & 3/3 & 0
+\end{array}\right)
+\end{equation}
+And that the stationary distribution follows a binomial distribution:
+\begin{equation}
+\pi(i) = \left(\begin{array}{c}
+n\\
+i
+\end{array}\right)
+ = (\frac{1}{2})^{i}*(\frac{1}{2})^{n-i}= \pi(i) = \left(\begin{array}{c}
+n\\
+i
+\end{array}\right)
+(\frac{1}{2})^{n}
+\end{equation}
 
+\begin{equation}
+\begin{split}
+p(i)*p(i,i+1)=\left(\begin{array}{c}
+n\\
+i
+\end{array}\right)
+(\frac{1}{2})^{n}*\frac{n-i}{n} = \\
+\frac{n!}{i!*(n-i)!} (\frac{1}{2})^{n}*\frac{n-i}{n} = \\
+\frac{n*(n-1)!}{i!*(n-i)(n-i-1)!} (\frac{1}{2})^{n}*\frac{n-i}{n} = \\
+\frac{(n-1)!}{i!*(n-i-1)!} (\frac{1}{2})^{n} = \\
+\frac{n!}{(i+1)!*(n-i-1)!} (\frac{1}{2})^{n}*\frac{i+1}{n} = \\
+\pi(i+1)p(i+1,i)
+\end{split}
+\end{equation}
 \end{document}

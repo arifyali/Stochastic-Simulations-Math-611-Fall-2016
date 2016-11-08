@@ -1,0 +1,128 @@
+\documentclass{article}
+\usepackage{amscd, amssymb, amsmath, verbatim, setspace}
+\usepackage[left=1.0in, right=1.0in, top=1.0in, bottom=1.0in]{geometry}
+\usepackage{mathrsfs}
+\usepackage{listings}
+<<echo=FALSE>>=
+  library(knitr)
+opts_knit$set(root.dir = "~/Documents/Georgetown/Stochastic Simulations Math 611 Fall 2016/",concordance=TRUE)
+opts_chunk$set(fig.keep="high", out.width="0.60\\linewidth")
+@
+
+\begin{document}
+\begin{flushright}
+Arif Ali\\
+Math 611 Stochastic Simulation\\
+Oct 27, 2016\\
+\end{flushright}
+
+\begin{center}
+\LARGE\textbf{Homework 7}
+  \end{center}
+\section*{Exercise 1 \& 2}
+\subsection*{Part A}
+<<>>=
+f = function(x) dgamma(x, 4.3,6.2)
+g = function(x) dgamma(x, 4, 7)
+
+
+Nsim=10^4
+X=rgamma(1, 4.3,6.2)    # initialize the chain from the stationary
+accept = c(0)
+for (t in 2:Nsim){
+  Y=rgamma(1, 4,7)   # candidate normal
+  rho=f(Y)*g(X[t-1])/(f(X[t-1])*g(Y))
+  if(runif(1)<rho){
+    X[t] = Y
+    accept[t] = 1
+  }
+  else{
+    X[t] =X[t-1]
+    accept[t] = 0
+  }
+}
+plot(X, type = "l", 
+     main = "target distribution gamma(4.3,6.2) with candidate gamma(4, 7)", 
+     xlab = "iteration")
+abline(h = 4.3/6.2, col = "red")
+@
+From the Metropolis-Hastings Algorithm the estimated mean of $gamma(4.3,6.2)$ is \Sexpr{mean(X)} and the acceptance rate is \Sexpr{mean(accept)*100}\%.
+\subsection*{Part B}
+<<>>=
+g = function(x) dgamma(x,5,6)
+
+X=rgamma(1, 4.3,6.2)   
+accept = c(0)
+for (t in 2:Nsim){
+  Y=rgamma(1, 5,6)
+  rho=f(Y)*g(X[t-1])/(f(X[t-1])*g(Y))
+  if(runif(1)<rho){
+    X[t] = Y
+    accept[t] = 1
+  }
+  else{
+    X[t] =X[t-1]
+    accept[t] = 0
+  }
+}
+plot(X, type = "l", 
+     main = "target distribution gamma(4.3,6.2) with candidate gamma(5, 6)", 
+     xlab = "iteration")
+abline(h = 4.3/6.2, col = "red")
+@
+From the Metropolis-Hastings Algorithm the estimated mean of $gamma(4.3,6.2)$ is \Sexpr{mean(X)} and the acceptance rate is \Sexpr{mean(accept)*100}\%.
+
+\section*{Exercise 3}
+<<>>=
+library('mixtools')
+x = c(0.12,0.17,0.32,0.56,0.98,1.03,1.10,1.18, 1.23, 1.67, 1.68, 2.33)
+out <- gammamixEM(x)
+out[2:4]
+@
+$Gamma(1, \beta) \equiv Exp(\beta)$ therefore the estimates for $\mu$ and $\lambda$ are \Sexpr{out$gamma.pars[2,]} respectively. The one issue is that the gamma mixture gives outputs for the $\alpha$ in a gamma distribution. This is set at $\alpha = 1$ for an exponential distribution.
+\section*{Exercise 4}
+\subsection*{Part A}
+\begin{equation}
+\left[\begin{array}{ccccc}
+ & 1 & 2 & 3 & 4\\
+1 & 1 & 0 & 0 & 0\\
+2 & 0 & 1 & 0 & 0\\
+3 & 0 & 0.019 & 0.98 & 0.001\\
+4 & 0.02 & 0.03 & 0 & 0.95
+\end{array}\right]
+\end{equation}
+\begin{equation}
+(I-R) = \left[\begin{array}{cc}
+1-0.98 & 0-0.001\\
+0-0 & 1-0.95
+\end{array}\right]=\left[\begin{array}{cc}
+0.02 & -0.001\\
+0 & 0.05
+\end{array}\right]
+\end{equation}
+
+\begin{equation}
+(I-R)^{-1} = \frac{1}{0.02*0.05-(-0.001)(0)}\left[\begin{array}{cc}
+0.05 & 0.001\\
+0 & 0.02\end{array}\right]=\left[\begin{array}{cc}
+50 & 1\\
+0 & 20\end{array}\right]
+\end{equation}
+
+\begin{equation}
+\left[\begin{array}{cc}
+50 & 1\\
+0 & 20\end{array}\right] * \left[\begin{array}{cc}
+0 & 0.019\\
+0.02 & 0.03\end{array}\right] = \left[\begin{array}{cc}
+0.02 & 0.98\\
+0.4 & 0.6\end{array}\right]
+\end{equation}
+\begin{equation}
+P(3,1) = 0.02
+\end{equation}
+\subsection*{Part B}
+\begin{equation}
+E(3,3)=50
+\end{equation}
+\end{document}

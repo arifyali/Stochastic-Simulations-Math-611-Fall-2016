@@ -70,9 +70,10 @@ Oct 13, 2016\\
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlstd{x} \hlkwb{=} \hlkwd{c}\hlstd{(}\hlnum{169.14353}\hlstd{,} \hlnum{135.73850}\hlstd{,} \hlnum{102.46566}\hlstd{,}  \hlnum{80.91151}\hlstd{,} \hlnum{148.45425}\hlstd{,} \hlnum{144.68948}\hlstd{,} \hlnum{106.56257}\hlstd{,} \hlnum{104.83559}\hlstd{,}
-\hlnum{94.81216}\hlstd{,} \hlnum{109.47048}\hlstd{,}  \hlnum{95.94150}\hlstd{,} \hlnum{123.84673}\hlstd{,}  \hlnum{87.18401}\hlstd{,} \hlnum{104.73420}\hlstd{,} \hlnum{111.94364}\hlstd{,} \hlnum{119.69467}\hlstd{,}
-\hlnum{151.77627}\hlstd{,}  \hlnum{81.80692}\hlstd{,} \hlnum{116.58660}\hlstd{,}  \hlnum{98.28933}\hlstd{)}
+\hlstd{x} \hlkwb{=} \hlkwd{c}\hlstd{(}\hlnum{169.14353}\hlstd{,} \hlnum{135.73850}\hlstd{,} \hlnum{102.46566}\hlstd{,}  \hlnum{80.91151}\hlstd{,} \hlnum{148.45425}\hlstd{,}
+      \hlnum{144.68948}\hlstd{,} \hlnum{106.56257}\hlstd{,} \hlnum{104.83559}\hlstd{,}\hlnum{94.81216}\hlstd{,} \hlnum{109.47048}\hlstd{,}
+      \hlnum{95.94150}\hlstd{,} \hlnum{123.84673}\hlstd{,}  \hlnum{87.18401}\hlstd{,} \hlnum{104.73420}\hlstd{,} \hlnum{111.94364}\hlstd{,}
+      \hlnum{119.69467}\hlstd{,} \hlnum{151.77627}\hlstd{,}  \hlnum{81.80692}\hlstd{,} \hlnum{116.58660}\hlstd{,}  \hlnum{98.28933}\hlstd{)}
 
 \hlstd{mu_1} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{100}\hlstd{)}
 \hlstd{mu_2} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{120}\hlstd{)}
@@ -87,7 +88,7 @@ Oct 13, 2016\\
   \hlstd{P_1} \hlkwb{<-} \hlstd{T_1} \hlopt{/} \hlstd{(T_1} \hlopt{+} \hlstd{T_2)}
   \hlstd{P_2} \hlkwb{<-} \hlstd{T_2} \hlopt{/} \hlstd{(T_1} \hlopt{+} \hlstd{T_2)} \hlcom{## note: P_2 = 1 - P_1}
   \hlcom{#tau_1[i+1] <- mean(P_1)}
-  \hlstd{W[i}\hlopt{+}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlkwd{mean}\hlstd{(P_2)}
+  \hlstd{W[i}\hlopt{+}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlkwd{mean}\hlstd{(P_1)}
   \hlcom{## Given the observed data, as well as the latent variables,}
   \hlcom{## what are the population parameters}
   \hlstd{mu_1[i}\hlopt{+}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlkwd{sum}\hlstd{( P_1} \hlopt{*} \hlstd{x)} \hlopt{/} \hlkwd{sum}\hlstd{(P_1)}
@@ -97,27 +98,183 @@ Oct 13, 2016\\
 \end{alltt}
 \begin{verbatim}
 ##         mu_1     mu_2         W
-## 2   96.04482 133.4018 0.4925329
-## 3   98.20615 138.6084 0.4019140
-## 4   99.49604 141.4485 0.3563159
-## 5  100.38478 143.5734 0.3255391
-## 6  101.02974 145.4095 0.3022692
-## 7  101.17853 145.8059 0.2972582
-## 8  101.24208 145.9554 0.2952656
-## 9  101.27532 146.0340 0.2942234
-## 10 101.29500 146.0809 0.2936057
-## 11 101.30746 146.1106 0.2932139
-## 12 101.31569 146.1304 0.2929552
-## 13 101.32127 146.1437 0.2927797
+## 2   96.04482 133.4018 0.5074671
+## 3   98.20225 138.5979 0.5979239
+## 4   99.30204 140.9658 0.6365587
+## 5   99.85074 142.2978 0.6561922
+## 6  100.33812 143.4546 0.6728337
+## 7  100.80388 144.7254 0.6894349
+## 8  101.02890 145.4078 0.6977058
+## 9  101.07789 145.5545 0.6994714
+## 10 101.08642 145.5785 0.6997678
+## 11 101.08782 145.5824 0.6998159
+## 12 101.08804 145.5830 0.6998237
+## 13 101.08808 145.5831 0.6998249
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
 \section*{Exercise 2}
 \subsection*{Part A}
-Since $X\sim N(0,1) \implies X^2 \sim Chi-squared(1)$ then $Z_{1}^{2} \sim Chi-squared(1)$. 
+Since $X\sim N(0,1) \implies X^2 \sim Chi-squared(1)$ then $Z_{1}^{2} \sim Chi-squared(1)$.
+
+By modifying the derivation from http://www.math.uah.edu/stat/special/ChiSquare.html:
+please note $f(x)$ and $F(x)$ refer to the PDF and CDF of $N(0,1)$
+\begin{equation}
+\begin{split}
+p(X=x | X\sim \theta_{1} Z_{1}^{2}) \implies \\
+p(-\sqrt{x/\theta_1}<Z_1<\sqrt{x/\theta_1}) = 2*F(\sqrt{x/\theta_{1}}) - 1
+\end{split}
+\end{equation}
+
+\begin{equation}
+\begin{split}
+d/\delta x(2*F(\sqrt{x/\theta_{1}})-1)= \\
+2*1/2*1/\sqrt{(}\theta_{1})*x^{1/2-1}*f(\sqrt{x/\theta_{1}})=\\
+1/\sqrt{\theta_{1}}*x^{1/2-1}*\frac{1}{\sqrt{2\pi}}e^{(\sqrt{x/\theta_{1}})^{2}/2}=\\
+\frac{1}{\sqrt{\pi}}*\frac{1}{\sqrt{2\theta_{1}}}*x^{1/2-1}*e^{\frac{1}{2\theta_{1}}x} =\\
+\frac{1}{\sqrt{\pi}}*(\frac{1}{2\theta_{1}})^{1/2}*x^{1/2-1}*e^{\frac{1}{2\theta_{1}}x} \sim Gamma(\frac{1}{2},\frac{1}{2\theta_{1}})
+\end{split}
+\end{equation}
+\subsection*{Part B}
+From Part A, we know that $\theta_{1}*Z_{1}^{2} \sim Gamma(\frac{1}{2},\frac{1}{2\theta_{1}})$. Using this same logic, $\theta_{2}*Z_{2}^{2} \sim Gamma(\frac{1}{2},\frac{1}{2\theta_{2}})$, so by using Method of momments on one of the theta parameters, it should mirror the results of the other theta parameter.
+\begin{equation}
+\begin{split}
+E(\theta_{1}*Z_{1}^{2}{}^{1})=E(\theta_{1}*Z_{1}^{2})=\frac{\frac{1}{2}}{\frac{1}{2\theta_{1}}}=\\
+\theta_{1}E
+(\theta_{1}*Z_{1}^{2})= \\
+Var(\theta_{1}*Z_{1}^{2})+(E(\theta_{1}*Z_{1}^{2}))^{2}=\\
+2(\theta_{1})^{2}+\theta_{1}^{2}=3\theta_{1}^{2}
+\end{split}
+\end{equation}
+\subsection*{Part C}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{theta_1} \hlkwb{=} \hlnum{0.3}
+\hlstd{theta_2} \hlkwb{=} \hlnum{1}\hlopt{-}\hlstd{theta_1}
+\hlstd{W} \hlkwb{=} \hlkwd{c}\hlstd{()}
+\hlkwa{for}\hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{1e3}\hlstd{)\{}
+  \hlkwa{if}\hlstd{(}\hlkwd{runif}\hlstd{(}\hlnum{1}\hlstd{)}\hlopt{<} \hlstd{theta_1)\{}
+    \hlstd{W[i]} \hlkwb{=} \hlstd{theta_1}\hlopt{*}\hlkwd{rchisq}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{1}\hlstd{)}
+  \hlstd{\}} \hlkwa{else} \hlstd{\{}
+    \hlstd{W[i]} \hlkwb{=} \hlstd{theta_2}\hlopt{*}\hlkwd{rchisq}\hlstd{(}\hlnum{1}\hlstd{,}\hlnum{1}\hlstd{)}
+  \hlstd{\}}
+\hlstd{\}}
+
+\hlkwa{for}\hlstd{( i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlnum{12}\hlstd{) \{}
+  \hlcom{## Given the observed data, as well as the distribution parameters,}
+  \hlcom{## what are the latent variables?}
+  \hlstd{T_1} \hlkwb{<-} \hlkwd{dgamma}\hlstd{(W,}\hlnum{0.5}\hlstd{,} \hlnum{1}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{theta_1))}
+  \hlstd{T_2} \hlkwb{<-} \hlkwd{dgamma}\hlstd{(W,}\hlnum{0.5}\hlstd{,} \hlnum{1}\hlopt{/}\hlstd{(}\hlnum{2}\hlopt{*}\hlstd{theta_2))}
+  \hlstd{P_1} \hlkwb{<-} \hlstd{T_1} \hlopt{/} \hlstd{(T_1} \hlopt{+} \hlstd{T_2)}
+  \hlstd{P_2} \hlkwb{<-} \hlstd{T_2} \hlopt{/} \hlstd{(T_1} \hlopt{+} \hlstd{T_2)}
+
+  \hlstd{theta_1[i}\hlopt{+}\hlnum{1}\hlstd{]} \hlkwb{<-}  \hlkwd{sum}\hlstd{( P_1} \hlopt{*} \hlstd{W)} \hlopt{/} \hlkwd{sum}\hlstd{(P_1)}
+  \hlstd{theta_2[i}\hlopt{+}\hlnum{1}\hlstd{]} \hlkwb{<-} \hlkwd{sum}\hlstd{( P_2} \hlopt{*} \hlstd{W)} \hlopt{/} \hlkwd{sum}\hlstd{(P_2)}
+
+\hlstd{\}}
+\hlkwd{data.frame}\hlstd{(theta_1, theta_2)[}\hlopt{-}\hlnum{1}\hlstd{,]}
+\end{alltt}
+\begin{verbatim}
+##      theta_1   theta_2
+## 2  0.3300647 0.8869361
+## 3  0.3317461 0.8940444
+## 4  0.3327202 0.8963451
+## 5  0.3332192 0.8975735
+## 6  0.3335825 0.8982493
+## 7  0.3339054 0.8986130
+## 8  0.3340001 0.8990231
+## 9  0.3343020 0.8991573
+## 10 0.3342301 0.8994933
+## 11 0.3344372 0.8995990
+## 12 0.3347586 0.8994143
+## 13 0.3346795 0.8996898
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
 \section*{Exercise 3}
+\subsection*{Part A}
+\begin{equation}
+\left(\begin{array}{cccc}
+0.5 & 0.5 & 0 & 0\\
+0.05 & 0.5 & 0.45 & 0\\
+0 & 0.1 & 0.5 & 0.4\\
+0 & 0 & 0.3 & 0.7
+\end{array}\right)
+\end{equation}
 
+\subsection*{Part B}
+Let $\pi(0) = c$
+\begin{equation}
+\begin{split}
+\pi(1) = \pi(0)*\frac{p_{0}}{q_{1}}=\pi(0)*\frac{0.5}{0.05} = 10c \\
+\pi(2) = \pi(1)*\frac{.45}{0.1}=45c \\
+\pi(3) = \pi(2)*\frac{.4}{0.3}=60c
+\end{split}
+\end{equation}
+
+\begin{equation}
+\begin{split}
+\pi(0)+\pi(1)+\pi(2)+\pi(3)=1= \\
+c+10c+45c+60c = 116c \implies \\
+c=\frac{1}{116}
+\end{split}
+\end{equation}
+So:
+\begin{equation}
+\begin{split}
+\pi(0)+\pi(1)+\pi(2)+\pi(3)=1= \\
+c+10c+45c+60c = 116c \implies \\
+c=\frac{1}{116}
+\end{split}
+\end{equation}
+
+\begin{equation}
+\begin{split}
+\pi(0) = \frac{1}{116}\\
+\pi(1) = \frac{10}{116}\\
+\pi(2) = \frac{45}{116}\\
+\pi(3) = \frac{60}{116}
+\end{split}
+\end{equation}
 \section*{Exercise 4}
+From class, we know that:
 
+\begin{equation}
+\left(\begin{array}{cccc}
+0 & 3/3 & 0 & 0\\
+1/3 & 0 & 2/3 & 0\\
+0 & 2/3 & 0 & 1/3\\
+0 & 0 & 3/3 & 0
+\end{array}\right)
+\end{equation}
+And that the stationary distribution follows a binomial distribution:
+\begin{equation}
+\pi(i) = \left(\begin{array}{c}
+n\\
+i
+\end{array}\right)
+ = (\frac{1}{2})^{i}*(\frac{1}{2})^{n-i}= \pi(i) = \left(\begin{array}{c}
+n\\
+i
+\end{array}\right)
+(\frac{1}{2})^{n}
+\end{equation}
 
+\begin{equation}
+\begin{split}
+p(i)*p(i,i+1)=\left(\begin{array}{c}
+n\\
+i
+\end{array}\right)
+(\frac{1}{2})^{n}*\frac{n-i}{n} = \\
+\frac{n!}{i!*(n-i)!} (\frac{1}{2})^{n}*\frac{n-i}{n} = \\
+\frac{n*(n-1)!}{i!*(n-i)(n-i-1)!} (\frac{1}{2})^{n}*\frac{n-i}{n} = \\
+\frac{(n-1)!}{i!*(n-i-1)!} (\frac{1}{2})^{n} = \\
+\frac{n!}{(i+1)!*(n-i-1)!} (\frac{1}{2})^{n}*\frac{i+1}{n} = \\
+\pi(i+1)p(i+1,i)
+\end{split}
+\end{equation}
 \end{document}
