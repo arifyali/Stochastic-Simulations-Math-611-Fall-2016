@@ -1,0 +1,79 @@
+\documentclass{article}
+\usepackage{amscd, amssymb, amsmath, verbatim, setspace}
+\usepackage[left=1.0in, right=1.0in, top=1.0in, bottom=1.0in]{geometry}
+\usepackage{mathrsfs}
+\usepackage{listings}
+<<echo=FALSE>>=
+  library(knitr)
+opts_knit$set(root.dir = "~/Documents/Georgetown/Stochastic Simulations Math 611 Fall 2016/HW10/",concordance=TRUE)
+opts_chunk$set(fig.keep="high", out.width="0.60\\linewidth", warning= F)
+@
+
+\begin{document}
+\begin{flushright}
+Arif Ali\\
+Math 611 Stochastic Simulation\\
+Nov 17, 2016\\
+\end{flushright}
+
+\begin{center}
+\LARGE\textbf{Homework 10}
+  \end{center}
+\section*{Exercise 1}
+Please note the the joint density can be easily seperated:
+\begin{equation}
+\begin{split}
+f(x,y) = \frac{x^{a+y-1}*e^{-(1+b)x}*b^{a}}{y!*\Gamma(a)} = \\
+\frac{b^a}{\Gamma(a)}x^{a-1}e^{-bx}*\frac{x^{y}e^{-x}}{y!}
+\end{split}
+\end{equation}
+From the reorganization of the joint density
+\begin{equation}
+f(x|y) = \frac{b^a}{\Gamma(a)}x^{a-1}e^{-bx} \sim gamma(a,b)
+\end{equation}
+Interesting to note that $f(x|y)$ does not depend on $y$, so in effect $f(x|y)=f(x)$.
+\section*{Exercise 2}
+From the reorganization of the joint density
+\begin{equation}
+f(y|x) = \frac{x^{y}e^{-x}}{y!}
+\end{equation}
+Which follows a poisson distribution where $\lambda=x$
+\section*{Exercise 3}
+<<>>=
+
+joint = function(a,b){
+  x = rgamma(1,a,b)
+  y = rpois(1,x)
+  return(data.frame(x,y,x*y))
+}
+
+@
+\section*{Exercise 4}
+<<>>=
+N = 5000
+prob_4 = data.frame("x", "y", "xy")[-1,]
+
+for(t in 1:N){
+  prob_4 = rbind(prob_4, joint(1,1))
+}
+names(prob_4) = c("x", "y", "xy")
+burn = 1e3
+sampled_gibbs = prob_4[-(1:burn),]
+plot(sampled_gibbs$x, sampled_gibbs$y, xlab = "x", ylab = "y")
+hist(sampled_gibbs$y, xlab = "y")
+mean(sampled_gibbs$y)
+@
+$E(Y)=$\Sexpr{mean(sampled_gibbs$y)}, which is very close to the value of the mean of $gamma(1,1)$ Since the x values were derived from that distribution, it would make sense that the average lambda value supplied to y is close to one.
+\section*{Exercise 5}
+<<>>=
+library(MCMCpack)
+beta_blockers <- read.csv("g.csv")
+beta_blockers = beta_blockers[beta_blockers$center == 1,]
+beta_blockers$death <- 1
+beta_blockers$death[beta_blockers$value != "Death"] = 0
+beta_blockers$trt = as.factor(beta_blockers$trt)
+mc_posterior = MCMClogit(death~trt+ob, data = beta_blockers)
+summary(mc_posterior)
+plot(mc_posterior)
+@
+\end{document}

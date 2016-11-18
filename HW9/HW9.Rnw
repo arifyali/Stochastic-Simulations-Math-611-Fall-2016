@@ -1,0 +1,145 @@
+\documentclass{article}
+\usepackage{amscd, amssymb, amsmath, verbatim, setspace}
+\usepackage[left=1.0in, right=1.0in, top=1.0in, bottom=1.0in]{geometry}
+\usepackage{mathrsfs}
+\usepackage{listings}
+<<echo=FALSE>>=
+  library(knitr)
+opts_knit$set(root.dir = "~/Documents/Georgetown/Stochastic Simulations Math 611 Fall 2016/",concordance=TRUE)
+opts_chunk$set(fig.keep="high", out.width="0.60\\linewidth", warning= F)
+@
+
+\begin{document}
+\begin{flushright}
+Arif Ali\\
+Math 611 Stochastic Simulation\\
+Nov 10, 2016\\
+\end{flushright}
+
+\begin{center}
+\LARGE\textbf{Homework 9}
+  \end{center}
+\section*{Exercise 1}
+\begin{equation}
+P(N(s)=m|N(t)=n)=\left(\begin{array}{c}
+n\\
+m
+\end{array}\right)\left(\frac{s}{t}\right)^{m}\left(1-\frac{s}{t}\right)^{n-m}
+\end{equation}
+\section*{Exercise 2}
+\begin{equation}
+P(T>t)=P(Bus_{A}>t)P(Bus_{B}>t)=e^{-2t}*e^{-t}=e^{-3t}
+\end{equation}
+\section*{Exercise 3}
+<<>>=
+log_f = function(y,n=101){
+  -y+(n-1)/2*log(1-exp(-y))+(-y*(n-1)/2)
+}
+
+RWMH = function(S, x0=1, N = 1e4){
+  x = x0
+  accept = 0
+  means = x0
+  for(t in 2:N){
+    y = rnorm(1, x[t-1], S)
+    accept[t] = 0
+    x[t] =x[t-1]
+    rho = exp(log_f(y))/exp(log_f(x[t-1]))
+    u = runif(1)
+      if(!is.na(rho)){
+        if(u<rho){
+          x[t] = y
+          accept[t] = 1
+          
+          }
+      }
+    means[t] = mean(x)
+  }
+  return(data.frame(x, accept, means))
+  }
+@
+\section*{Exercise 4}
+<<>>=
+S_1 = RWMH(1)
+mean(S_1$accept)
+plot(S_1$x, type="l",
+       ylab="X", ylim=range(S_1$x), main = "Sampled Values")
+
+plot(S_1$means, type="l",
+       ylab="X", ylim=range(S_1$means), main = "Sampled Means")
+@
+With $\sigma = 1$, the acceptance rate is very low. This is due most likely because of candidate values that are less than zero. If these values are less than zero, there is no way for them to be within the proposal distribution, thus causing the rejection to occur. The Sampled value graphs seem to indicate that there is a pattern, which means there is some form of convengence. The sample mean seems to hold at approximately the same value after RWHM a run for less than 1000 iterations.  
+<<>>=
+S_0.1 = RWMH(0.1)
+mean(S_0.1$accept)
+plot(S_0.1$x, type="l",
+       ylab="X", ylim=range(S_0.1$x))
+
+plot(S_0.1$means, type="l",
+       ylab="X", ylim=range(S_0.1$means), main = "Sampled Means")
+@
+With $\sigma = 0.1$, the acceptance rate is signicantly greater than the rate when $\sigma = 1$. The patterns indicate convergence, but based on the graph of the Sampled Means, the means seem to hold after less iterations compared to $\sigma = 1$.
+
+\section*{Exercise 5}
+
+\subsection*{uniform}
+<<>>=
+RWMH = function(f){
+  N = 1e4
+x = 1
+accept = 0
+means = 1
+for(t in 2:N){
+  y = f(x[t-1])
+  accept[t] = 0
+  x[t] =x[t-1]
+  rho = dnorm(y,0,1)/dnorm(x[t-1],0,1)
+  u = runif(1)
+      if(u<rho){
+        x[t] = y
+        accept[t] = 1
+        
+        }
+  means[t] = mean(x)
+}
+  return(data.frame(x, accept, means))
+}
+
+unif_RWMH = RWMH(function(x) runif(1, x-1, x+1))
+@
+The acceptance rate for the uniform distribution \Sexpr{mean(unif_RWMH$accept)*100}\%.
+\subsection*{cauchy}
+<<>>=
+RWMH_cauchy = RWMH(function(x) rcauchy(1, location = x))
+plot(density(RWMH_cauchy$x), main = "Cauchy")
+lines(density(unif_RWMH$x), col = "red")
+legend("topright", legend = c("Cauchy", "uniform"), fill = c("black", "red"))
+
+@
+The acceptance rate for the cauchy distribution \Sexpr{mean(RWMH_cauchy$accept)*100}\%. The Cauchy distribution seems  to fit the uniform very closely. This could indicate that the cauchy distribution and uniform distribution are similar candidates for the normal distribution.
+<<>>=
+@
+\subsection*{laplace}
+<<>>=
+library(smoothmest)
+RWMH_laplace = RWMH(function(x) rdoublex(1,x))
+plot(density(RWMH_laplace$x), main = "Laplace")
+lines(density(unif_RWMH$x), col = "red")
+legend("topright", legend = c("laplace", "uniform"), fill = c("black", "red"))
+@
+The acceptance rate for the laplace distribution \Sexpr{mean(RWMH_laplace$accept)*100}\%. Unlike the Cauchy distribution, there seem to be more noticable differences especially at the peak of the distributions. 
+\subsection*{laplace vs cauchy}
+<<>>==
+plot(density(RWMH_cauchy$x), main = "Cauchy vs Laplace")
+lines(density(RWMH_laplace$x), col = "red")
+legend("topright", legend = c("cauchy", "laplace"), fill = c("black", "red"))
+@
+The results are similiar to the comparisions of the laplace vs uniform distribution.
+<<>>=
+plot(RWMH_cauchy$means, type ="l", main = "Means")
+lines(RWMH_laplace$means, col = "red")
+legend("topright", legend = c("cauchy", "laplace"), fill = c("black", "red"))
+
+@
+When comparing the means by iteration of both, it's interesting that it takes the laplace a shorter amount of iterations to reach zero compared to the cauchy distribution. 
+\end{document}
