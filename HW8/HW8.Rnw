@@ -5,7 +5,7 @@
 \usepackage{listings}
 <<echo=FALSE>>=
   library(knitr)
-opts_knit$set(root.dir = "~/Documents/Georgetown/Stochastic Simulations Math 611 Fall 2016/",concordance=TRUE)
+opts_knit$set(root.dir = "~/Documents/Stochastic-Simulations-Math-611-Fall-2016/",concordance=TRUE)
 opts_chunk$set(fig.keep="high", out.width="0.60\\linewidth")
 @
 

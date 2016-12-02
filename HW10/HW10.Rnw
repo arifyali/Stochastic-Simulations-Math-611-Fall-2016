@@ -41,8 +41,8 @@ Which follows a poisson distribution where $\lambda=x$
 \section*{Exercise 3}
 <<>>=
 
-joint = function(a,b){
-  x = rgamma(1,a,b)
+joint = function(y,a,b){
+  x = rgamma(y,a,b)
   y = rpois(1,x)
   return(data.frame(x,y,x*y))
 }
