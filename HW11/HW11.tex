@@ -207,7 +207,7 @@ Using bcanon we obtain the following:
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
-The median of $gamma(1,\beta)$ is 0.3465736, which is within the 90\% BCa confidence Interval of (0.3399802,0.3567573).
+The median of $gamma(1,\beta)$ is 0.3465736, which is within the 90\% BCa confidence Interval of (0.3339342,0.350399).
 
 Instead of using a function from the the R package, we adapt the R function build in class.
 \begin{knitrout}
@@ -232,7 +232,7 @@ Instead of using a function from the the R package, we adapt the R function buil
     \hlcom{# the acceleration factor (jackknife est.)}
     \hlstd{th.jack} \hlkwb{<-} \hlkwd{numeric}\hlstd{(n)}
     \hlkwa{for} \hlstd{(i} \hlkwa{in} \hlnum{1}\hlopt{:}\hlstd{n) \{}
-      \hlstd{th.jack[i]} \hlkwb{<-} \hlkwd{Stat}\hlstd{(x[}\hlopt{-}\hlstd{i, ])} \hlcom{#unlike the class example, we are calculating the median of a function }
+      \hlstd{th.jack[i]} \hlkwb{<-} \hlkwd{Stat}\hlstd{(x[}\hlopt{-}\hlstd{i, ])} \hlcom{#unlike the class example, we are calculating the median }
     \hlstd{\}}
     \hlstd{L} \hlkwb{<-} \hlkwd{mean}\hlstd{(th.jack)} \hlopt{-} \hlstd{th.jack}
     \hlstd{a} \hlkwb{<-} \hlkwd{sum}\hlstd{(L}\hlopt{^}\hlnum{3}\hlstd{)}\hlopt{/}\hlstd{(}\hlnum{6} \hlopt{*} \hlkwd{sum}\hlstd{(L}\hlopt{^}\hlnum{2}\hlstd{)}\hlopt{^}\hlnum{1.5}\hlstd{)}
@@ -248,23 +248,24 @@ Instead of using a function from the the R package, we adapt the R function buil
   \hlstd{boot.median[i]} \hlkwb{=} \hlkwd{median}\hlstd{(}\hlkwd{sample}\hlstd{(x,} \hlkwc{size} \hlstd{=} \hlnum{1e4}\hlstd{,} \hlkwc{replace} \hlstd{= T))}
   \hlstd{\}}
 
-\hlstd{bca_int} \hlkwb{=} \hlkwd{boot.BCa}\hlstd{(}\hlkwc{x} \hlstd{=} \hlkwd{rexp}\hlstd{(}\hlnum{1e4}\hlstd{,} \hlkwc{rate} \hlstd{=} \hlnum{2}\hlstd{),} \hlkwc{th0} \hlstd{=} \hlkwd{median}\hlstd{(x),} \hlkwc{th} \hlstd{= boot.median ,}\hlkwc{Stat} \hlstd{= median)}\hlopt{$}\hlstd{BCa}
+\hlstd{bca_int} \hlkwb{=} \hlkwd{boot.BCa}\hlstd{(}\hlkwc{x} \hlstd{=} \hlkwd{rexp}\hlstd{(}\hlnum{1e4}\hlstd{,} \hlkwc{rate} \hlstd{=} \hlnum{2}\hlstd{),} \hlkwc{th0} \hlstd{=} \hlkwd{median}\hlstd{(x),}
+                   \hlkwc{th} \hlstd{= boot.median ,}\hlkwc{Stat} \hlstd{= median)}\hlopt{$}\hlstd{BCa}
 \hlstd{bca_int[}\hlnum{1}\hlstd{]}\hlopt{<}\hlkwd{median_expo}\hlstd{(}\hlnum{2}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-## 4.736841% 
+## 5.057134% 
 ##      TRUE
 \end{verbatim}
 \begin{alltt}
 \hlstd{bca_int[}\hlnum{2}\hlstd{]}\hlopt{>}\hlkwd{median_expo}\hlstd{(}\hlnum{2}\hlstd{)}
 \end{alltt}
 \begin{verbatim}
-## 94.72531% 
+## 95.05662% 
 ##      TRUE
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
-The median of $gamma(1,\beta)$ is 0.3465736, which is within the 90\% BCa confidence Interval of (0.3429105,0.3589501).
+The median of $gamma(1,\beta)$ is 0.3465736, which is within the 90\% BCa confidence Interval of (0.3372315,0.3539623).
 
-If instead of BCa confidence intervals we did Percentile Confidence Intervals, that 90\% Confidence interval would be (0.3431754,0.3589769).
+If instead of BCa confidence intervals we did Percentile Confidence Intervals, that 90\% Confidence interval would be (0.3370903,0.3539155).
 \end{document}

@@ -154,7 +154,7 @@ boot.BCa <-
     # the acceleration factor (jackknife est.)
     th.jack <- numeric(n)
     for (i in 1:n) {
-      th.jack[i] <- Stat(x[-i, ]) #unlike the class example, we are calculating the median of a function 
+      th.jack[i] <- Stat(x[-i, ]) #unlike the class example, we are calculating the median 
     }
     L <- mean(th.jack) - th.jack
     a <- sum(L^3)/(6 * sum(L^2)^1.5)
@@ -170,7 +170,8 @@ for(i in 1:1e4){
   boot.median[i] = median(sample(x, size = 1e4, replace = T))
   }
 
-bca_int = boot.BCa(x = rexp(1e4, rate = 2), th0 = median(x), th = boot.median ,Stat = median)$BCa
+bca_int = boot.BCa(x = rexp(1e4, rate = 2), th0 = median(x), 
+                   th = boot.median ,Stat = median)$BCa
 bca_int[1]<median_expo(2)
 bca_int[2]>median_expo(2)
 @
